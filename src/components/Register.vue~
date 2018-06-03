@@ -1,38 +1,52 @@
+
 <template>
 
-  <div class="login-wrapper border border-light">
-  <button type="button" class="btn btn-sm btn-default" >Register <span class="fa fa-caret-down bottom-right"></span></button>
-    <form class="form-signin" @submit.prevent="login">
-      <h2 class="form-signin-heading">Please sign in</h2>
+  <div class="register-wrapper border border-light">
+ 
+    <form class="form-signin" @submit.prevent="register">
+      <h2 class="form-signin-heading">Please Register</h2>
       <label for="inputEmail" class="sr-only">Email address</label>
       <input v-model="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
       <label for="inputPassword" class="sr-only">Password</label>
       <input v-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+<label for="confirmInputPassword" class="sr-only">Password</label>
+<input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" placeholder="Confirm Password" required>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
       <span>{{error}}</span>
     </form>
   </div>
 </template>
 
+
 <script>
 export default {
-  name: 'Login',
+  name: 'Register',
   data () {
     return {
-      email: '',
+        email: '',
       password: '',
+      confirmPassword : '',
       error:''
     }
   },
+  computed: {
+  comparePasswords () {
+    if (this.password === this.confirmPassword ) return true
+    else {
+     error='Passwords don\'t match';
+return false
+    }
+}
+},
   methods: {
- login () {
-  this.$http.post('http://127.0.0.1:5000/login', { username: this.email, password: this.password })
-    .then(request => this.loginSuccessful(request))
+ register () {
+  this.$http.post('http://127.0.0.1:5000/registration', { username: this.email, password: this.password })
+    .then(request => this.registerSuccessful(request))
     .catch(() => this.loginFailed())
 },
-    loginSuccessful (req) {
+    registerSuccessful (req) {
       if (!req.data.token) {
-        this.loginFailed(req.data.message)
+        this.registerFailed(req.data.message)
         return
       }
       this.error = false
@@ -40,7 +54,7 @@ export default {
       this.$store.dispatch('login')
       this.$router.replace(this.$route.query.redirect || '/authors')
     },
-    loginFailed (message) {
+    registerFailed (message) {
       this.error = message
       this.$store.dispatch('logout')
       delete localStorage.token
@@ -49,12 +63,14 @@ export default {
 }
 </script>
 
-<style lang="css">
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="css">
+
 body {
   background: #605B56;
 }
 
-.login-wrapper {
+.register-wrapper {
   background: #fff;
   width: 70%;
   margin: 12% auto;
@@ -92,17 +108,5 @@ body {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-}
-
-button {
-    width: 50px;
-    height: 20px;
-    position: relative;
-}
-
-.bottom-right {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
 }
 </style>

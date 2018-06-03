@@ -1,5 +1,7 @@
 <template>
+
   <div class="login-wrapper border border-light">
+ 
     <form class="form-signin" @submit.prevent="login">
       <h2 class="form-signin-heading">Please sign in</h2>
       <label for="inputEmail" class="sr-only">Email address</label>
@@ -7,6 +9,7 @@
       <label for="inputPassword" class="sr-only">Password</label>
       <input v-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      <span>{{error}}</span>
     </form>
   </div>
 </template>
@@ -17,7 +20,8 @@ export default {
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      error:''
     }
   },
   methods: {
@@ -28,7 +32,7 @@ export default {
 },
     loginSuccessful (req) {
       if (!req.data.token) {
-        this.loginFailed()
+        this.loginFailed(req.data.message)
         return
       }
       this.error = false
@@ -36,8 +40,8 @@ export default {
       this.$store.dispatch('login')
       this.$router.replace(this.$route.query.redirect || '/authors')
     },
-    loginFailed () {
-      this.error = 'Login failed!'
+    loginFailed (message) {
+      this.error = message
       this.$store.dispatch('logout')
       delete localStorage.token
     }
@@ -89,4 +93,5 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
 </style>
