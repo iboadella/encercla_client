@@ -1,0 +1,36 @@
+<template>
+  <div>
+
+</template>
+
+<script>
+import AppNav from './AppNav';
+import { isLoggedIn } from '../../utils/auth';
+import { getPrivateStartupBattles } from '../../utils/battles-api';
+
+export default {
+  name: 'privateArea',
+  components: {
+    AppNav,
+  },
+  data() {
+    return {
+      privateBattles: '',
+    };
+  },
+  methods: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
+    getPrivateStartupBattles() {
+      getPrivateStartupBattles().then((battles) => {
+        this.privateBattles = battles;
+      });
+    },
+  },
+  mounted() {
+    this.getPrivateStartupBattles();
+  },
+};
+</script>
+
