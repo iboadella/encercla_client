@@ -42,7 +42,7 @@ export default {
     },
     loginFailed (message) {
       this.error = message
-      this.$store.dispatch('logout')
+      //this.$store.dispatch('logout')
       delete localStorage.token
     }
   }
