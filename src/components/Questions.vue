@@ -1,20 +1,21 @@
 <template>
-  <div class="hello">
-    <h1> Questions </h1><li v-for="(item,index) in questions">
+  <div class="container bg-primary">
+    <li v-for="(item,index) in questions">
     <span v-on:click="setSelected(index)">
-       {{ item.id }}
+       
        <icon v-if="index==selected"name="circle" style="height: 1em" color="green"/>
-       <icon v-if="index!=selected"name="circle" style="height: 1em" color="green"/>
+       <icon v-if="index!=selected"name="circle" style="height: 1em" color="black"/>
     </span>
     </li>
+    <h5 class="text-left" style="color:white">{{questions[selected].statement}}
+    <icon name="question-circle"  scale="1.5" style="vertical-align: middle;"/></li>
+   </h5>
     <ul class="list-group">
-    <li class="list-group-item">{{ questions[selected].q1 }}</li>
+    <li class="list-group-item rounded">{{ questions[selected].q1 }}</li>
     <li class="list-group-item">{{ questions[selected].q2 }}</li>
     <li class="list-group-item">{{ questions[selected].q3 }}</li>
     </ul>
   <div class="form-group">
-    <label for="exampleInputEmail1">Email address</label>
-    <input class="form-control" placeholder="Answer"  v-model="answers[selected]" >
     
   </div>
     
@@ -24,6 +25,7 @@
 
 <script>
 import 'vue-awesome/icons/circle'
+import 'vue-awesome/icons/question-circle'
 import Icon from 'vue-awesome/components/Icon'
 export default {
   components: {
@@ -55,15 +57,16 @@ export default {
 h1, h2 {
   font-weight: normal;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+
 li {
   display: inline-block;
   margin: 0 10px;
 }
-a {
-  color: #42b983;
+.list-group-item {
+    float: left;
+    margin: 0px;
+    padding: 10px 0px;
+    border-radius: 5ex !important;
+
 }
 </style>

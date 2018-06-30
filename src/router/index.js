@@ -4,6 +4,7 @@ import HelloWorld from '@/components/HelloWorld'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
 import Questions from '@/components/Questions'
+import Admin from '@/components/Admin'
 Vue.use(Router)
 
 export default new Router({
@@ -22,6 +23,11 @@ export default new Router({
       path: '/questions',
       name: 'Questions',
       component: Questions
+    },
+{
+      path: '/admin',
+      name: 'Admin',
+      component: Admin
     }
   ]
 })

@@ -1,9 +1,9 @@
 <template>
 
-  <div class="login-wrapper border border-light">
+  <div class="login-wrapper border border-light" style="background-color: rgb(232,77,32)">
  
     <form class="form-signin" @submit.prevent="login">
-      <h2 class="form-signin-heading">Please sign in</h2>
+      <h2 class="form-signin-heading">Please  sign in</h2>
       <label for="inputEmail" class="sr-only">Email address</label>
       <input v-model="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
       <label for="inputPassword" class="sr-only">Password</label>
