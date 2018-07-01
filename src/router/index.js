@@ -3,8 +3,10 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
+import RegisterCompany from '@/components/RegisterCompany'
 import Questions from '@/components/Questions'
 import Admin from '@/components/Admin'
+import UsersManagement from '@/components/UsersManagement'
 Vue.use(Router)
 
 export default new Router({
@@ -20,6 +22,11 @@ export default new Router({
       component: Register
     },
 {
+      path: '/registercompany',
+      name: 'RegisterCompany',
+      component: RegisterCompany
+    },
+{
       path: '/questions',
       name: 'Questions',
       component: Questions
@@ -28,6 +35,12 @@ export default new Router({
       path: '/admin',
       name: 'Admin',
       component: Admin
+    }
+,
+{
+      path: '/admin/users',
+      name: 'UsersManagement',
+      component: UsersManagement
     }
   ]
 })
