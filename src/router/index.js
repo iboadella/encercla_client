@@ -7,6 +7,7 @@ import RegisterCompany from '@/components/RegisterCompany'
 import Questions from '@/components/Questions'
 import Admin from '@/components/Admin'
 import UsersManagement from '@/components/UsersManagement'
+import UserPage from '@/components/UserPage'
 Vue.use(Router)
 
 export default new Router({
@@ -41,6 +42,12 @@ export default new Router({
       path: '/admin/users',
       name: 'UsersManagement',
       component: UsersManagement
+    }
+,
+{
+      path: '/user',
+      name: 'UserPage',
+      component: UserPage
     }
   ]
 })

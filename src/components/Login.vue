@@ -15,6 +15,9 @@
 </template>
 
 <script>
+
+
+
 export default {
   name: 'Login',
   data () {
@@ -26,24 +29,25 @@ export default {
   },
   methods: {
  login () {
-  this.$http.post('http://127.0.0.1:5000/login', { username: this.email, password: this.password })
+  /*this.$http.post('http://127.0.0.1:5000/login', { username: this.email, password: this.password })
     .then(request => this.loginSuccessful(request))
     .catch(() => this.loginFailed())
 },
     loginSuccessful (req) {
-      if (!req.data.token) {
+      if (!req.data.access_token) {
         this.loginFailed(req.data.message)
         return
       }
       this.error = false
-      localStorage.token = req.data.token
-      this.$store.dispatch('login')
+      localStorage.token = req.data.acces_token
       this.$router.replace(this.$route.query.redirect || '/authors')
     },
     loginFailed (message) {
       this.error = message
       //this.$store.dispatch('logout')
       delete localStorage.token
+   */
+
     }
   }
 }
