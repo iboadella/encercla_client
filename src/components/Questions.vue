@@ -11,12 +11,19 @@
     <icon name="question-circle"  scale="1.5" style="vertical-align: middle;"/></li>
    </h5>
     <ul class="list-group">
-    <li class="list-group-item rounded">{{ questions[selected].q1 }}</li>
-    <li class="list-group-item">{{ questions[selected].q2 }}</li>
-    <li class="list-group-item">{{ questions[selected].q3 }}</li>
-    </ul>
+    <li v-for ="item in items" class="list-group-item" v-on:click="setOption(item)" 
+v-bind:class="compare(item)" > {{ questions[selected]['q'+item]}}</li>
+
+  </ul>
+    <input v-model="answers[selected].justification_text" type="text" id="inputcommercial_name" class="form-control" placeholder="survey Name" required autofocus>
   <div class="form-group">
-    
+      <div class="container">
+    <div class="large-12 medium-12 small-12 cell">
+      <label>File
+        <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+      </label>
+    </div>
+  </div>
   </div>
     
 
@@ -36,19 +43,66 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       questions :[],
-      selected:1,
-      answers:[]
+      selected:0,
+      answers:[],
+      company_survey:'',
+      selected_class : 'list-group-item-secondary',
+      items:[1,2,3,4]
       
     }
   },methods: {
- fetchQuestions () {
-  this.$http.get('http://127.0.0.1:5000/questions', { })
-    .then(request => this.questions=request.data.data)
+ fetchAnswers (arrays) {
+  this.$http.get('http://127.0.0.1:5000/answers?ids='+arrays, { })
+    .then(request => {this.answers=request.data.data 
+                      
+                })
     .catch(() => "")
 },
-   setSelected(index){this.selected=index;
-   }
-},mounted(){this.fetchQuestions()}
+
+ fetchQuestions (arrays) {
+  this.$http.get('http://127.0.0.1:5000/questions?ids='+arrays, { })
+    .then(request => {this.questions=request.data.data 
+                      
+                })
+    .catch(() => "")
+},
+ fetchCompanySurvey () {
+  this.$http.get('http://127.0.0.1:5000/companysurvey/'+this.$route.params.id, { })
+    .then(request => {this.company_survey=request.data
+                      this.fetchQuestions(request.data.questions)
+                      this.fetchAnswers(request.data.answers)
+                      })
+    .catch(() => "")
+},
+   setSelected(index){
+    this.selected=index;
+   },
+compare(item){
+if (item==this.answers[this.selected].id_option) return 'list-group-item-success' 
+else return false
+},
+setOption(value){
+this.answers[this.selected].id_option=value
+},
+handleFileUpload(){
+this.answers[this.selected].justification_file=this.$refs.file.files[0];
+let formData = new FormData();
+formData.append('file', this.answers[this.selected].justification_file);
+this.$http.post( 'http://localhost:5000/upload',
+  formData,
+  {
+    headers: {
+        'Content-Type': 'multipart/form-data'
+    }
+  }
+).then(function(){
+  console.log('SUCCESS!!');
+})
+.catch(function(){
+  console.log('FAILURE!!');
+});
+}
+},mounted(){this.fetchCompanySurvey()}
 }
 </script>
 

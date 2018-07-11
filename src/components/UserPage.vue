@@ -4,26 +4,34 @@
 <button class="btn btn-primary" type="button" @click="showModal">
 <icon name="plus-circle"  scale="1.5" style="vertical-align: middle;"/></button>Questionari nou
 </button>
+
 <table class="table">
   <thead>
     <tr>
       <th scope="col">Nom empresa</th>
+      <th scope="col">Nom questionari</th>
       <th scope="col">Any</th>
       <th scope="col">Version</th>
       <th scope="col">Sector</th>
+      <th scope="col">Status</th>
     </tr>
   </thead>
   <tbody>
-    <tr>{{company.commercial_name}}</tr>
-    <tr>{{company.sector}}</tr>
-     <tr>{{company.subsector}}</tr>
+    <tr v-for="(item,index) in company_surveys">
+    <td>{{company.commercial_name}}</td>
+    <td color="white"><a v-bind:href ="'#/questions/'+item.id" style="color:black">{{item.name_survey}}  </a></td>
+     <td>{{item.last_modified}}</td>
+     <td>{{item.version}}</td>
+     <td>{{company.sector}}</td>
+     <td>{{item.status}}</td>
+</tr>
 </tbody>
 </table>
     <b-modal ref="myModalRef" hide-footer title="">
       <div class="d-block text-center">
         <h3>Name of survey</h3>
 <input v-model="survey_name" type="text" id="inputcommercial_name" class="form-control" placeholder="survey Name" required autofocus>
-
+      {{error}}
       </div>
       <button class="btn btn-primary" variant="outline-danger" block @click="hideModal">Cancel</button>
       <button class="btn btn-primary" variant="outline-danger" block @click="createCompanySurvey">Create</button>
@@ -46,7 +54,9 @@ export default {
       user: 'dpiscia',
       company:{id:1},
       survey_name:'',
-      survey:''
+      survey:'',
+      company_surveys:[],
+      error:''
     }
   },methods: {
  fetchCompany () {
@@ -59,28 +69,26 @@ export default {
     .then(request => this.survey=request.data)
     .catch(() => "")
 },
+ fetchCompanySurvey () {
+  this.$http.get('http://127.0.0.1:5000/companysurvey', { })
+    .then(request => this.company_surveys=request.data)
+    .catch(() => "")
+},
  createCompanySurvey () {
   this.$http.post('http://127.0.0.1:5000/companysurvey',  { 
     id_survey : this.survey.id,
     id_company : this.company.id,
     name_survey: this.survey_name})
     .then(request => this.registerSuccessful(request))
-    .catch(() => "")
+    .catch(request => this.registerFailed(request))
 },
     registerSuccessful (req) {
-      if (!req.data.token) {
-        this.registerFailed(req.data.message)
-        return
-      }
-      this.error = false
-      localStorage.token = req.data.token
-      this.$store.dispatch('login')
-      this.$router.replace(this.$route.query.redirect || '/authors')
+      this.company_surveys=[]
+      this.fetchCompanySurvey()
+
     },
-    registerFailed (message) {
-      this.error = message
-      this.$store.dispatch('logout')
-      delete localStorage.token
+    registerFailed (req) {
+      this.error = req.response.data.message
     },
     showModal () {
       this.$refs.myModalRef.show()
@@ -88,7 +96,7 @@ export default {
     hideModal () {
       this.$refs.myModalRef.hide()
     }
-},mounted(){this.fetchCompany(), this.fetchSurvey()}
+},mounted(){this.fetchCompany(), this.fetchSurvey(), this.fetchCompanySurvey()}
 }
 </script>
 
