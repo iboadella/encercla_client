@@ -17,7 +17,7 @@
 <script>
 
 
-
+import auth from '../auth/index.js'
 export default {
   name: 'Login',
   data () {
@@ -29,7 +29,7 @@ export default {
   },
   methods: {
  login () {
-  /*this.$http.post('http://127.0.0.1:5000/login', { username: this.email, password: this.password })
+  this.$http.post('http://127.0.0.1:5000/login', { username: this.email, password: this.password })
     .then(request => this.loginSuccessful(request))
     .catch(() => this.loginFailed())
 },
@@ -39,14 +39,16 @@ export default {
         return
       }
       this.error = false
-      localStorage.token = req.data.acces_token
-      this.$router.replace(this.$route.query.redirect || '/authors')
+      localStorage.access_token = req.data.access_token
+      localStorage.refresh_token = req.data.refresh_token
+      auth.user.authenticated=true;
+      this.$router.replace(this.$route.query.redirect || '/user')
     },
     loginFailed (message) {
       this.error = message
       //this.$store.dispatch('logout')
       delete localStorage.token
-   */
+   
 
     }
   }

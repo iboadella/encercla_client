@@ -43,6 +43,7 @@
 import 'vue-awesome/icons/plus-circle'
 import Icon from 'vue-awesome/components/Icon'
 import bModal from 'bootstrap-vue/es/components/modal/modal'
+import auth from '../auth/index.js'
 export default {
   components: {
     Icon,
@@ -60,17 +61,17 @@ export default {
     }
   },methods: {
  fetchCompany () {
-  this.$http.get('http://127.0.0.1:5000/company/1', { })
+  this.$http.get('http://127.0.0.1:5000/company', { headers: auth.getAuthHeader() })
     .then(request => this.company=request.data)
     .catch(() => "")
 },
  fetchSurvey () {
-  this.$http.get('http://127.0.0.1:5000/survey', { })
+  this.$http.get('http://127.0.0.1:5000/survey', { headers: auth.getAuthHeader() })
     .then(request => this.survey=request.data)
     .catch(() => "")
 },
  fetchCompanySurvey () {
-  this.$http.get('http://127.0.0.1:5000/companysurvey', { })
+  this.$http.get('http://127.0.0.1:5000/companysurvey', { headers: auth.getAuthHeader() })
     .then(request => this.company_surveys=request.data)
     .catch(() => "")
 },
@@ -97,6 +98,14 @@ export default {
       this.$refs.myModalRef.hide()
     }
 },mounted(){this.fetchCompany(), this.fetchSurvey(), this.fetchCompanySurvey()}
+,
+    route: {
+      // Check the users auth status before
+      // allowing navigation to the route
+      canActivate() {
+        return auth.user.authenticated
+      }
+    }
 }
 </script>
 

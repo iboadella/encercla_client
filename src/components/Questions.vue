@@ -15,7 +15,7 @@
 v-bind:class="compare(item)" > {{ questions[selected]['q'+item]}}</li>
 
   </ul>
-    <input v-model="answers[selected].justification_text" type="text" id="inputcommercial_name" class="form-control" placeholder="survey Name" required autofocus>
+    <input v-model="answers[selected].justification_text" type="text" id="inputcommercial_name" class="form-control" placeholder="survey Name" required autofocus @input="onInput()">
   <div class="form-group">
       <div class="container">
     <div class="large-12 medium-12 small-12 cell">
@@ -47,10 +47,41 @@ export default {
       answers:[],
       company_survey:'',
       selected_class : 'list-group-item-secondary',
-      items:[1,2,3,4]
+      items:[1,2,3,4],
+      timeoutId:''
       
     }
   },methods: {
+onInput(e) {
+    updateAnswer=this.updateAnswer()
+      // this will be called on change of value
+	console.log('Textarea Change');
+        clearTimeout(this.timeoutId);
+    this.timeoutId = setTimeout(function() {
+        // Runs 1 second (1000 ms) after the last change    
+        this.updateAnswer();
+    }, 1000);
+
+   },
+/* updateAnswer(answer) {
+  this.$http.put('http://127.0.0.1:5000/answer/'+answer.id, {answer })
+    .then(request => {
+         console.log("OK")
+                      
+                })
+    .catch(() => console.log("KO")
+         )
+},*/
+ updateAnswer() {
+  var answer= this.answers[this.selected]
+  this.$http.put('http://127.0.0.1:5000/answer/'+answer.id, {answer })
+    .then(request => {
+         console.log("OK")
+                      
+                })
+    .catch(() => console.log("KO")
+         )
+},
  fetchAnswers (arrays) {
   this.$http.get('http://127.0.0.1:5000/answers?ids='+arrays, { })
     .then(request => {this.answers=request.data.data 
@@ -82,7 +113,8 @@ if (item==this.answers[this.selected].id_option) return 'list-group-item-success
 else return false
 },
 setOption(value){
-this.answers[this.selected].id_option=value
+	this.answers[this.selected].id_option=value;
+	this.updateAnswer(this.answers[this.selected])
 },
 handleFileUpload(){
 this.answers[this.selected].justification_file=this.$refs.file.files[0];
