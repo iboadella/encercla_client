@@ -79,7 +79,8 @@ export default {
   this.$http.post('http://127.0.0.1:5000/companysurvey',  { 
     id_survey : this.survey.id,
     id_company : this.company.id,
-    name_survey: this.survey_name})
+    name_survey: this.survey_name}
+, { headers: auth.getAuthHeader() })
     .then(request => this.registerSuccessful(request))
     .catch(request => this.registerFailed(request))
 },
@@ -98,14 +99,7 @@ export default {
       this.$refs.myModalRef.hide()
     }
 },mounted(){this.fetchCompany(), this.fetchSurvey(), this.fetchCompanySurvey()}
-,
-    route: {
-      // Check the users auth status before
-      // allowing navigation to the route
-      canActivate() {
-        return auth.user.authenticated
-      }
-    }
+
 }
 </script>
 

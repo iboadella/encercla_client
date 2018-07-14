@@ -1,3 +1,4 @@
+import Vue from 'vue'
 export  default  {
 
   user: {
@@ -17,5 +18,6 @@ checkAuth() {
       'Authorization': 'Bearer ' + localStorage.getItem('access_token')
     }
   }
+ 
 
 }

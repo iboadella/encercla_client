@@ -50,8 +50,8 @@ export default {
       delete localStorage.token
    
 
-    }
-  }
+    },
+  },updated(){}
 }
 </script>
 
