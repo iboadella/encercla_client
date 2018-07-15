@@ -1,51 +1,91 @@
 <template>
   <div class="container bg-primary">
-    <li v-for="(item,index) in questions">
+     <div class="row">
+    <div class="col-12">
+    <li style="background-color:#e84d20" v-for="(item,index) in questions">
     <span v-on:click="setSelected(index)">
        
-       <icon v-if="index==selected"name="circle" style="height: 1em" color="green"/>
-       <icon v-if="index!=selected"name="circle" style="height: 1em" color="black"/>
+       <icon v-if="index==selected"name="circle-o" style="height: 1em" color="green"/>
+       <icon v-if="index!=selected"name="circle-o" style="height: 1em" color="black"/>
     </span>
+
     </li>
     <h5 class="text-left" style="color:white">{{questions[selected].statement}}
-    <icon name="question-circle"  scale="1.5" style="vertical-align: middle;"/></li>
+    <span id="exButton2">
+	<icon name="question-circle"   scale="1.5" style="vertical-align: middle;"/>
+    </span>
+<div id="dav" class="container" style="max-width:100%">
+ <b-tooltip  boundary="window" target="exButton2" placement="bottom">
+    <div class="container" style="word-wrap: break-word;width: 750px;max-height:500px; font-size:14px">
+    {{questions[selected].more_information}}
+    </div>
+  </b-tooltip>
+</div>
+   </li>
+
    </h5>
+   </div>
+  </div>
+   <div class="row">
+    <div class="col-9">
     <ul class="list-group">
     <li v-for ="item in items" class="list-group-item" v-on:click="setOption(item)" 
-v-bind:class="compare(item)" > {{ questions[selected]['q'+item]}}</li>
+v-bind:style="compare(item)"  v-if="questions[selected]['q'+item]!=''"> {{ questions[selected]['q'+item]}}</li>
 
   </ul>
-    <input v-model="answers[selected].justification_text" type="text" id="inputcommercial_name" class="form-control" placeholder="survey Name" required autofocus @input="onInput()">
-  <div class="form-group">
-      <div class="container">
-    <div class="large-12 medium-12 small-12 cell">
-      fiel {{answers[selected].justification_file}}
-      <label>File 
+   </div>
+  </div>
+<div class="row">
+    <div class="col-sm-2">
+	    <input type="checkbox" class="form-check-input">
+	    <label class="form-check-label" for="exampleCheck1"> Futurible</label>
+    </div>
+    <div class="col-sm-3">
+              
         <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
       </label>
     </div>
-  </div>
+</div>
+<div class="row">
+    <div class="col-9">
+    <input v-model="answers[selected].justification_text" type="text" id="inputcommercial_name" class="form-control" :placeholder="questions[selected].futurible" required autofocus @input="onInput()" 
+style="height:100px;background-color:#e84d20; color:white; ">
+    </div>
+</div>
+  <!--div class="form-group">
+      <div class="container">
+    <div class="large-12 medium-12 small-12 cell">
+       {{answers[selected].justification_file}}
+
+    </div>
+  </div-->
 <div>
   <b-button v-on:click="submitSurvey()" v-bind:class="{disabled: !submittable}" variant="success">Submit</b-button>
-
+ 
 </div>
 
   </div>
-    
+
 
   </div>
 </template>
 
 <script>
+import bModal from 'bootstrap-vue/es/components/modal/modal'
 import 'vue-awesome/icons/circle'
+import 'vue-awesome/icons/circle-o'
 import 'vue-awesome/icons/question-circle'
 import bButton from 'bootstrap-vue/es/components/button/button';
+import bFormRadio from 'bootstrap-vue/es/components/form-radio/form-radio';
+import bTooltip from 'bootstrap-vue/es/components/tooltip/tooltip';
 import Icon from 'vue-awesome/components/Icon'
 import auth from '../auth/index.js'
 export default {
   components: {
     Icon,
-   'b-button': bButton
+   'b-button': bButton,
+   'b-tooltip': bTooltip,
+   'b-modal': bModal
   },
   name: 'Questions',
   data () {
@@ -55,13 +95,14 @@ export default {
       selected:0,
       answers:[],
       company_survey:'',
-      selected_class : 'list-group-item-secondary',
+      selected_class : 'list-group-item-primary',
       items:[1,2,3,4],
       timeoutId:''
       
     }
   },
   computed: {
+
     // a computed getter
     submittable: function () {
       // `this` points to the vm instance
@@ -74,6 +115,13 @@ export default {
     }
   }
 ,methods: {
+ 
+    showModal () {
+      this.$refs.myModalRef.show()
+    },
+    hideModal () {
+      this.$refs.myModalRef.hide()
+    },
 onInput(e) {
     updateAnswer=this.updateAnswer()
       // this will be called on change of value
@@ -135,8 +183,8 @@ onInput(e) {
     this.selected=index;
    },
 compare(item){
-if (item==this.answers[this.selected].id_option) return 'list-group-item-success' 
-else return false
+if (item==this.answers[this.selected].id_option) return 'background-color:#e84d20; color:white;' 
+else return 'background-color:white; color:black;'
 },
 getpoints(question,value){
   var n=2;
@@ -154,23 +202,23 @@ setOption(value){
 	this.updateAnswer(this.answers[this.selected])
 },
 handleFileUpload(){
-this.answers[this.selected].justification_file=this.$refs.file.files[0].name;
-let formData = new FormData();
-formData.append('file', this.answers[this.selected].justification_file);
-this.$http.post( 'http://localhost:5000/upload?answer='+this.answers[this.selected].id,
-  formData,
-  {
-    headers: {
-        'Content-Type': 'multipart/form-data'
-    }
-  }
-).then(request=> {
-  this.updateAnswer(this.answers[this.selected]);
-})
-.catch(function(){
-  console.log('FAILURE!!');
-});
-}
+		this.answers[this.selected].justification_file=this.$refs.file.files[0].name;
+		let formData = new FormData();
+		formData.append('file', this.$refs.file.files[0]);
+		this.$http.post( 'http://localhost:5000/upload?answer='+this.answers[this.selected].id,
+		  formData,
+		  {
+		    headers: {
+			'Content-Type': 'multipart/form-data'
+		    }
+		  }
+		).then(request=> {
+		  this.updateAnswer(this.answers[this.selected]);
+		})
+		.catch(function(){
+		  console.log('FAILURE!!');
+		});
+	}
 },mounted(){this.fetchCompanySurvey()}
 }
 </script>
@@ -184,12 +232,23 @@ h1, h2 {
 li {
   display: inline-block;
   margin: 0 10px;
+  background-color: white;
+ 
 }
 .list-group-item {
     float: left;
-    margin: 0px;
+    margin: 5px;
     padding: 10px 0px;
     border-radius: 5ex !important;
+    border-width: 1ex;
+    border-color:white;
+    
 
+}
+.popover{
+    max-width: 100%; /* Max Width of the popover (depending on the container!) */
+}
+.tooltip-inner{
+max-width:900px !important
 }
 </style>
