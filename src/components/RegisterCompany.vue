@@ -79,13 +79,13 @@ computed: {
 },
   methods: {
  getSectors(){
-  this.$http.get('http://127.0.0.1:5000/sectors', { })
+  this.$http.get('sectors', { })
     .then(request => this.sectors=request.data)
     .catch(() => "")
 },
 
  register () {
-  this.$http.post('http://127.0.0.1:5000/registrationcompany', { 
+  this.$http.post('registrationcompany', { 
     sector : this.sector,
     subsector : this.subsector,
     commercial_name : this.commercial_name,

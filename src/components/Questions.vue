@@ -136,7 +136,7 @@ onInput(e) {
  submitSurvey() {
   this.company_survey.status="submitted"
   var company_survey= this.company_survey
-  this.$http.put('http://127.0.0.1:5000/companysurvey/'+company_survey.id, {company_survey},
+  this.$http.put('companysurvey/'+company_survey.id, {company_survey},
  { headers: auth.getAuthHeader() })
     .then(request => {
          console.log("OK")
@@ -147,7 +147,7 @@ onInput(e) {
 },
  updateAnswer() {
   var answer= this.answers[this.selected]
-  this.$http.put('http://127.0.0.1:5000/answer/'+answer.id, {answer },
+  this.$http.put('answer/'+answer.id, {answer },
  { headers: auth.getAuthHeader() })
     .then(request => {
          console.log("OK")
@@ -157,7 +157,7 @@ onInput(e) {
          )
 },
  fetchAnswers (arrays) {
-  this.$http.get('http://127.0.0.1:5000/answers?ids='+arrays,  { headers: auth.getAuthHeader() })
+  this.$http.get('answers?ids='+arrays,  { headers: auth.getAuthHeader() })
     .then(request => {this.answers=request.data.data 
                       
                 })
@@ -165,14 +165,14 @@ onInput(e) {
 },
 
  fetchQuestions (arrays) {
-  this.$http.get('http://127.0.0.1:5000/questions?ids='+arrays, { headers: auth.getAuthHeader() })
+  this.$http.get('questions?ids='+arrays, { headers: auth.getAuthHeader() })
     .then(request => {this.questions=request.data.data 
                       
                 })
     .catch(() => "")
 },
  fetchCompanySurvey () {
-  this.$http.get('http://127.0.0.1:5000/companysurvey/'+this.$route.params.id, { headers: auth.getAuthHeader() })
+  this.$http.get('companysurvey/'+this.$route.params.id, { headers: auth.getAuthHeader() })
     .then(request => {this.company_survey=request.data
                       this.fetchQuestions(request.data.questions)
                       this.fetchAnswers(request.data.answers)

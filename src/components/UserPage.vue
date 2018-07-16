@@ -73,17 +73,17 @@ export default {
     }
   },methods: {
  fetchCompany () {
-  this.$http.get('http://127.0.0.1:5000/company', { headers: auth.getAuthHeader() })
+  this.$http.get('company', { headers: auth.getAuthHeader() })
     .then(request => this.company=request.data)
     .catch(() => "")
 },
  fetchSurvey () {
-  this.$http.get('http://127.0.0.1:5000/survey', { headers: auth.getAuthHeader() })
+  this.$http.get('survey', { headers: auth.getAuthHeader() })
     .then(request => this.survey=request.data)
     .catch(() => "")
 },
  fetchCompanySurvey () {
-  this.$http.get('http://127.0.0.1:5000/companysurvey', { headers: auth.getAuthHeader() })
+  this.$http.get('companysurvey', { headers: auth.getAuthHeader() })
     .then(request => this.company_surveys=request.data)
     .catch(() => "")
 },
@@ -97,7 +97,7 @@ DARI_needed(){
      this.error="you need to upload a DARI file"
      return
      }
-  this.$http.post('http://127.0.0.1:5000/companysurvey',  { 
+  this.$http.post('companysurvey',  { 
     id_survey : this.survey.id,
     file_dari: this.DARI_filename,
     id_company : this.company.id}

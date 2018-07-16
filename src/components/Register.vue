@@ -40,7 +40,7 @@ return false
 },
   methods: {
  register () {
-  this.$http.post('http://127.0.0.1:5000/registration', { username: this.email, password: this.password })
+  this.$http.post('registration', { username: this.email, password: this.password })
     .then(request => this.registerSuccessful(request))
     .catch(() => this.loginFailed())
 },

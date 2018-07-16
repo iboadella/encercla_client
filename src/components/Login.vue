@@ -29,7 +29,7 @@ export default {
   },
   methods: {
  login () {
-  this.$http.post('http://127.0.0.1:5000/login', { username: this.email, password: this.password })
+  this.$http.post('login', { username: this.email, password: this.password })
     .then(request => this.loginSuccessful(request))
     .catch(() => this.loginFailed())
 },
