@@ -8,6 +8,7 @@ import Questions from '@/components/Questions'
 import Admin from '@/components/Admin'
 import UsersManagement from '@/components/UsersManagement'
 import UserPage from '@/components/UserPage'
+import Results from '@/components/Results'
 import auth from '../auth/index.js'
 Vue.use(Router)
 
@@ -34,6 +35,12 @@ const router= new Router({
       path: '/questions/:id',
       name: 'Questions',
       component: Questions,
+      secure: true,
+    },
+    {
+      path: '/results/:id',
+      name: 'Results',
+      component: Results,
       secure: true,
     },
 {
