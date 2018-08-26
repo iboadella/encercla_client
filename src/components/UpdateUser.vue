@@ -4,19 +4,19 @@
   <div class="register-wrapper border border-light">
    
     <form class="form-signin" @submit.prevent="register">
-      <h2 class="form-signin-heading">{{"Donar d'alta la meva empresa" | translate}}</h2>
+      <h2 class="form-signin-heading">Change email</h2>
       <label for="inputEmail" class="sr-only">Email address</label>
-      <input v-model="email" type="email" id="inputEmail" class="form-control" v-bind:placeholder="'Correu electronic'|translate" required autofocus>
+      <input v-model="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
       <div v-if="currentRoute" class="form-check float-left">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="admin">
         <label class="form-check-label" for="exampleCheck1">Administrator</label>
      </div>
       <label for="inputPassword" class="sr-only">Password</label>
-      <input v-model="password" type="password" id="inputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
+      <input v-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" >
 <label for="confirmInputPassword" class="sr-only">Password</label>
-<input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Registrar</button>
-      <span>{{error|translate}}</span>
+<input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" placeholder="Change Password" >
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+      <span>{{error}}</span>
     </form>
   </div>
 </template>
@@ -32,64 +32,67 @@ export default {
       password: '',
       confirmPassword : '',
       error:'',
-      admin:true
+      admin:true,
+      user_id:'',
     }
   },
   computed: {
     currentRoute(){
        //console.log(this.$route.path=='/registerAdmin')
-       return this.$route.path=='/registerAdmin'
+       return this.$route.path=='/updateuseradmin'
     },
   comparePasswords () {
     if (this.password === this.confirmPassword ) return true
     else {
-     this.error=this.$i18n.translate('contrasenya no coincideix');
+     error='Passwords don\'t match';
 return false
     }
 }
 },
   methods: {
+ fetchUser () {
+  var route='user'
+  if (this.$route.query.id!=undefined)
+    route='user/'+this.$route.query.id
+  else this.user_id=-1
 
+  this.$http.get(route, { headers: auth.getAuthHeader() })
+    .then(request => {
+      this.email=request.data.email
+       if (request.data.type_user!=undefined && request.data.type_user==1)
+       this.admin=true})
+    .catch(() => "")
+},
  register () {
-  this.error='';
-  if (!this.comparePasswords)
-    return
-  if (this.currentRoute)
-  {
-   this.$http.post('adminregistration', { username: this.email, password: this.password ,admin:this.admin},{ headers: auth.getAuthHeader() })
+    var route='user'
+
+  if (this.$route.query.id!=undefined)
+    route='user/'+this.$route.query.id
+  var user_id=this.$route.query.id
+   this.$http.put(route, { username: this.email, password: this.password ,admin:this.admin},{ headers: auth.getAuthHeader() })
     .then(request => {
                       this.error="created"
-                      this.$router.replace(this.$route.query.redirect || '/registercompany/'+request.data.user_id)
+                      this.$router.replace(this.$route.query.redirect || '/registercompany/'+user_id)
                        })
     .catch(() => this.error = message)
    
-  }
-   else {
-  this.$http.post('registration', { username: this.email, password: this.password })
-    .then(request => this.registerSuccessful(request))
-    .catch(() => this.loginFailed())
-  }
-}
-,
+
+},
     registerSuccessful (req) {
       if (!req.data.access_token) {
         this.loginFailed(req.data.message)
         return
       }
       this.error = ''
-      localStorage.access_token = req.data.access_token
-      localStorage.refresh_token = req.data.refresh_token
-      auth.user.authenticated=true;
       this.$router.replace(this.$route.query.redirect || '/registercompany')    }
     ,
     loginFailed (message) {
       this.error = message
-      //this.$store.dispatch('logout')
-      delete localStorage.token
+
    
 
     }
-  }
+  },mounted(){this.fetchUser()}
 }
 
 </script>

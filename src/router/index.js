@@ -9,6 +9,10 @@ import Admin from '@/components/Admin'
 import UsersManagement from '@/components/UsersManagement'
 import UserPage from '@/components/UserPage'
 import Results from '@/components/Results'
+import UpdateUser from '@/components/UpdateUser'
+import EditSurvey from '@/components/EditSurvey'
+import ManageSurvey from '@/components/ManageSurvey'
+import quisom from '@/components/quisom'
 import auth from '../auth/index.js'
 Vue.use(Router)
 
@@ -19,14 +23,55 @@ const router= new Router({
       name: 'Login',
       component: Login
     },
+        {
+      path: '/quisom',
+      name: 'quisom',
+      component: quisom
+    },
 {
-      path: '/register',
+      path: '/registerAdmin',
       name: 'Register',
       component: Register,
       secure: true,
     },
+ {
+      path: '/admin/surveys',
+      name: 'ManageSurvey',
+      component: ManageSurvey,
+      secure: true,
+    }, 
+     {
+      path: '/register',
+      name: 'Register',
+      component: Register,
+      secure: false,
+    },  
+       {
+      path: '/updatesurvey/:id',
+      name: 'EditSurvey',
+      component: EditSurvey,
+      secure: true,
+    }, 
+   {
+      path: '/updateuser',
+      name: 'UpdateUser',
+      component: UpdateUser,
+      secure: true,
+    },
+       {
+      path: '/updateuseradmin',
+      name: 'UpdateUser',
+      component: UpdateUser,
+      secure: true,
+    },  
 {
       path: '/registercompany',
+      name: 'RegisterCompany',
+      component: RegisterCompany,
+      secure: true,
+    },
+{
+      path: '/registercompany/:id',
       name: 'RegisterCompany',
       component: RegisterCompany,
       secure: true,

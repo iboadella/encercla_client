@@ -1,10 +1,6 @@
 <template>
   <div class="hello">
-    <h4  style="color:white">{{company.commercial_name}}
-    <a href="#/registercompany"> 
-    <icon name="edit"  color="white" scale="1.5" style="vertical-align: middle;"/>
-      </a>
-      </h4>
+    <h4 style="color:white">{{company.commercial_name}}</h4>
 <button class="btn btn-primary" type="button" @click="showModal">
 <icon name="plus-circle"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
@@ -29,8 +25,8 @@
   <tbody>
     <tr v-for="(item,index) in company_surveys">
     <td><input type="checkbox" v-model="item.selected" v-on:click="setOption(index)"></td>
-    <td v-if="item.status=='created'" color="white"><a  v-bind:href ="'#/questions/'+item.id" style="color:black">{{item.name_survey}}  </a></td>
-      <td v-if="item.status!='created'" color="white"><a  v-bind:href ="'#/results/'+item.id" style="color:black">{{item.name_survey}}  </a></td>   
+    <td color="white"><a v-bind:href ="'#/questions/'+item.id" style="color:black">{{item.name_survey}}  </a></td>
+     
      <td>{{item.status}}</td>
      <td>{{item.last_modified}}</td>
      <td>       <icon name="circle" style="height: 1em" color="green"/>
@@ -58,20 +54,10 @@
     <b-modal ref="myModalError" id="myModalError">
     {{this.error}}
      </b-modal>
-         <b-modal ref="instructions" id="instructions">
-    1. Fer clic al botó 'Crear'. Això generarà un qüestionari amb nom automàtic (nom empresa+any+versió) i mostrarà la pantalla amb la primera pregunta.
-2. Cada pregunta està composada dels següents elements:
-a) Barra de progrés: mostra tants punts com preguntes a respondre. Els punts en verd representen preguntes que ja s'han respòs, mentre que els negres representen preguntes pendents.
-b) Enunciat de la pregunta: situa el tema que s'està avaluant
-c) Més informació sobre la pregunta: la icona (?) mostra informació extra sobre el tema avaluat
-d) Possibles respostes: 2,3 o 4 possibles respostes entre les que s'ha d'escollir la situació més propera a la realitat de l'empresa.
-e) Botó d'adjuntar document: 
-     </b-modal>
   </div>
 </template>
 
 <script>
-import 'vue-awesome/icons/edit'
 import 'vue-awesome/icons/plus-circle'
 import 'vue-awesome/icons/user'
 import 'vue-awesome/icons/clipboard'
@@ -188,26 +174,16 @@ DARI_needed(){
       this.company_surveys=[]
       
       this.fetchCompanySurvey()
-      this.hideModal ()
-      this.showModalInstructions ()
 
     },
     registerFailed (req) {
       this.error = req.response.data.message
     },
     showModal () {
-      this.DARI_filename == ''
       this.$refs.myModalRef.show()
     },
     hideModal () {
       this.$refs.myModalRef.hide()
-    },
-      showModalInstructions () {
-      
-      this.$refs.instructions.show()
-    },
-    hideModalInstructions () {
-      this.$refs.instructions.hide()
     },
     showModalError () {
       this.$refs.myModalError.show()
@@ -216,26 +192,26 @@ DARI_needed(){
       this.$refs.myModalError.hide()
     },
 setFileName(){
-		this.DARI_filename=this.$refs.file.files[0].name;
-	},
+    this.DARI_filename=this.$refs.file.files[0].name;
+  },
 handleFileUpload(id_companysurvey){
-		this.DARI_filename=this.$refs.file.files[0].name;
-		let formData = new FormData();
-		formData.append('file', this.$refs.file.files[0]);
-		this.$http.post( 'http://localhost:5000/upload?surveycompany_id='+id_companysurvey,
-		  formData,
-		  {
-		    headers: {
-			'Content-Type': 'multipart/form-data'
-		    }
-		  }
-		).then(request=> {
-		  console.log('OK')
-		})
-		.catch(function(){
-		  console.log('FAILURE!!');
-		});
-	},
+    this.DARI_filename=this.$refs.file.files[0].name;
+    let formData = new FormData();
+    formData.append('file', this.$refs.file.files[0]);
+    this.$http.post( 'http://localhost:5000/upload?surveycompany_id='+id_companysurvey,
+      formData,
+      {
+        headers: {
+      'Content-Type': 'multipart/form-data'
+        }
+      }
+    ).then(request=> {
+      console.log('OK')
+    })
+    .catch(function(){
+      console.log('FAILURE!!');
+    });
+  },
 },mounted(){this.fetchCompany(), this.fetchSurvey(), this.fetchCompanySurvey()}
 
 }

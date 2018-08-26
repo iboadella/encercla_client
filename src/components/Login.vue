@@ -3,14 +3,17 @@
   <div class="login-wrapper border border-light" style="background-color: rgb(232,77,32)">
  
     <form class="form-signin" @submit.prevent="login">
-      <h2 class="form-signin-heading">Please  sign in</h2>
-      <label for="inputEmail" class="sr-only">Email address</label>
-      <input v-model="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+      <span>{{language}}</span> 
+      <h2 class="form-signin-heading">{{'iniciar  sessiò'|translate}}</h2>
+      <label for="inputEmail" class="sr-only">Correu electronic</label>
+      <input v-model="email" type="email" id="inputEmail" class="form-control" v-bind:placeholder="'Correu electronic'|translate" required autofocus>
       <label for="inputPassword" class="sr-only">Password</label>
-      <input v-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      <input v-model="password" type="password" id="inputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">{{'iniciar  sessiò'|translate}}</button>
+
       <span>{{error}}</span>
     </form>
+    <a href="#/register"><button class="btn btn-lg btn-primary btn-block" type="submit">Register</button></a>
   </div>
 </template>
 
@@ -18,16 +21,33 @@
 
 
 import auth from '../auth/index.js'
+import Vue from 'vue'
 export default {
   name: 'Login',
   data () {
     return {
       email: '',
       password: '',
-      error:''
+      error:'',
+      lang:auth.user.lang,
+      string1:{'cat':'iniciar  sessiò','es':'iniciar session'}
+    }
+  }
+  ,
+  computed:{
+        language: function () {
+      return this.$i18n.locale()
     }
   },
   methods: {
+    setValue(lang){
+    this.lang=lang
+    },
+    returnLanguage(){
+      console.log("fired")
+      this.lang=auth.user.lang
+return auth.getLang()
+    },
  login () {
   this.$http.post('login', { username: this.email, password: this.password })
     .then(request => this.loginSuccessful(request))
