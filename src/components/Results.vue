@@ -3,8 +3,11 @@
   <div id="printable"  class="hello">
  <div class="container">
      <div class="col-md-4 offset-md-4" style="background-color:black;border-radius: 5ex !important;">
+      <p class="text-light"> Empresa  {{company_survey.company}} </p>
+      <p class="text-light"> Nom questionari : {{company_survey.name_survey}}</p>
+      <p class="text-light"> Data d'avaluacio {{company_survey.pub_date}}</p>
  <p class="text-light"> Punctuacio obtinguda  {{results_avg.avg}}/100</p>
-<p class="text-light"> Punctuacio futurible  {{results_avg.avg_future}}/100</p>
+<p class="text-light"> Punctuacio futurible  {{results_avg.avg+results_avg.avg_future}}/100</p>
     </div>
   </div>
   <div id="chart" class="chart">
@@ -18,12 +21,21 @@
   <span v-for="(value,strategy) in results" class="demo">
          <li class="list-group-item" style="color:#e84d20;border-top-left-radius: 5ex !important;
           border-top-right-radius: 5ex !important;">{{strategy}}</li>
-          
+          <span v-if="value.avg<1">
+             <li class="list-group-item" v-for="(item,index) in proposals[strategy][lang]">
+      <p>
+
+       {{item}}
+      </p>
+   
+    </li>
+          </span>
 	  <li class="list-group-item" v-for="(item,index) in filtered(strategy)">
 		  <p>
 
 		   {{questions[item][lang].proposta_millora}}
 		  </p>
+   
 	  </li>
           <li class="list-group-item" style="border-bottom-left-radius: 5ex !important;
           border-bottom-right-radius: 5ex !important;"></li>
@@ -38,7 +50,7 @@
 <script>
 import lodash from 'lodash'
 import auth from '../auth/index.js'
-<<<<<<< HEAD
+
 import jsPDF from 'jspdf'
 import html2pdf from 'html2pdf.js'
 import bButton from 'bootstrap-vue/es/components/button/button';
@@ -46,10 +58,6 @@ export default {
     components: {
    'b-button': bButton,
   },
-=======
-
-export default {
->>>>>>> 051c2c9ffde687b51ca2491be0d918010df59953
   name: 'Results',
   data () {
     return {
@@ -71,7 +79,8 @@ export default {
       score:'',
       results_avg:'',
       results:'',
-      results_avg_future:0
+      results_avg_future:0,
+      proposals:[]
     }
   },
   computed:{
@@ -141,14 +150,15 @@ computeScore(){
 
  // results.forEach(function(result){
    //  results_avg.score= results_avg.score+result.score; results_avg.numsector= results_avg.numsector+1})
-  results_avg.avg= results_avg.score*100/results_avg.numsector;
+  results_avg.avg= Math.round((results_avg.score*100/results_avg.numsector)*100)/100;
 
-  results_avg.avg_future= results_avg.score_future*100/results_avg.numsector;
+  results_avg.avg_future= Math.round((results_avg.score_future*100/results_avg.numsector)*100)/100;
   this.results_avg=results_avg;
-  this.company_survey.score=results_avg.avg
-  this.company_survey.score_future=results_avg.avg_future
-
-  this.updateCompanySurvey()
+  this.company_survey.score=Math.round(results_avg.avg*100)/100
+  this.company_survey.score_future=Math.round(results_avg.avg_future*100)/100
+  //if not submitted
+  if (this.company_survey.pub_date!="")
+    this.updateCompanySurvey()
   this.renderChart(this.$data.data);
 },
  fetchAnswers (arrays) {
@@ -171,6 +181,14 @@ computeScore(){
   this.$http.get('companysurvey/'+this.$route.params.id, { headers: auth.getAuthHeader() })
     .then(request => {this.company_survey=request.data
                       this.fetchQuestions(request.data.questions,request.data.answers)
+
+                      })
+    .catch(() => "")
+},
+ fetchProposals () {
+  this.$http.get('proposals', { headers: auth.getAuthHeader() })
+    .then(request => {this.proposals=request.data
+                      
 
                       })
     .catch(() => "")
@@ -211,12 +229,12 @@ updateCompanySurvey(){
 	var svg=d3.select("#chart")
 		.append("svg")
 		.attr({
-		    width:w,
-		    height:h,
+		    width:w+300,
+		    height:h+300,
 		    class:'shadow'
 		}).append('g')
 		.attr({
-		    transform:'translate('+w/2+','+h/2+')'
+		    transform:'translate('+(w+300)/2+','+(h+100)/2+')'
         });
 
 	  var path=svg.selectAll('path')
@@ -252,11 +270,11 @@ updateCompanySurvey(){
 	      fill:'black',
 	      'font-size':'10px'
 	  });
-	var legendRectSize=20;
+	var legendRectSize=40;
 	var legendSpacing=7;
 	var legendHeight=legendRectSize+legendSpacing;
 	 
-	 
+	var color = d3.scale.ordinal().domain(["Estratègia amb alt potencial de millora", "Estratègia amb potencial de millora mitjà", "Estratègia amb bona puntuació obtinguda","Estratègia no aplicable al sector de l'empresa"]).range(["#43AE1D","#D8DE23","#F5F7F1","#DC58D8"]);
 	var legend=svg.selectAll('.legend')
 	  .data(color.domain())
 	  .enter()
@@ -265,7 +283,7 @@ updateCompanySurvey(){
 	      class:'legend',
 	      transform:function(d,i){
 		  //Just a calculation for x and y position
-		  return 'translate(-35,' + ((i*legendHeight)-65) + ')';
+		  return 'translate('+((1*legendHeight)-165)+',' + (100+(i*legendHeight)+100) + ')';
 	      }
 	  });
 	legend.append('rect')
@@ -282,7 +300,7 @@ updateCompanySurvey(){
 	 
 	legend.append('text')
 	  .attr({
-	      x:30,
+	      x:50,
 	      y:15
 	  })
 	  .text(function(d){
@@ -293,7 +311,7 @@ updateCompanySurvey(){
 	  });
         }
 
-	},mounted(){this.fetchCompanySurvey();
+	},mounted(){this.fetchCompanySurvey();this.fetchProposals();
                     //this.renderChart(this.$data.data);
 
 	}

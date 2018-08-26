@@ -10,7 +10,7 @@
   <tbody>
     <tr v-for="(item,index) in questions">
  
-      <td>{{item.statement}}</td>
+      <td>{{item[lang].statement}}</td>
       <td><input type="checkbox" v-model="item.selected"></td>
      
 </tr>
@@ -32,6 +32,11 @@ export default {
       questions:'',
       questions_applied:''
     }
+  } , computed: {
+
+        lang: function () {
+      return this.$i18n.locale()
+    }
   },methods:{
 
   	updateSurvey(){
@@ -40,7 +45,10 @@ export default {
         this.$http.put('survey', { 
         'questions':questions_applied.join(),
         'id_company': this.company.id}, { headers: auth.getAuthHeader() })
-    .then(request => {console.log("ok")})
+    .then(request => {console.log("ok")
+      this.$router.replace(this.$route.query.redirect || '/admin/users')
+
+  })
     .catch(() => "")
         
 

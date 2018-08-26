@@ -3,9 +3,16 @@
   <div class="container bg-primary">
     <h4>List of Users</h4>
     <div class="col-sm-12">
+      <label class="control-label">Comarca</label>
         <select v-model="filter_comarca">
         <option value=""></option>
         <option v-for="item in unique_comarca" :value="item">{{item}}</option>
+
+    </select> 
+    <label class="control-label">Leader</label>  
+        <select v-model="filter_leader">
+        <option value=""></option>
+        <option v-for="item in unique_leader" :value="item">{{item}}</option>
     </select>   
   </div>
     <a href="/#/registerAdmin"><button class="btn btn-primary" type="button"  >
@@ -74,6 +81,7 @@ export default {
        users :[],
        error:'',
        filter_comarca:'',
+       filter_leader:'',
        filtered:[]
     }
 
@@ -82,10 +90,15 @@ export default {
             unique_comarca () {
     return uniq(this.filtered.map(p => p.comarca))
   },
+            unique_leader () {
+    return uniq(this.filtered.map(p => p.leader))
+  },
   filtered_users(){
     var filtered=this.users
       if (this.filter_comarca!='')
     filtered=_.filter(filtered, {comarca:this.filter_comarca });
+      if (this.filter_leader!='')
+    filtered=_.filter(filtered, {leader:this.filter_leader });
     this.filtered=filtered;
     return filtered
   }

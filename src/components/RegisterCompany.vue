@@ -9,6 +9,7 @@
   
   <div class="form-group">
     <select class="custom-select" v-model='sector' >
+       <option value="" disabled selected>Sector</option>
   <option v-for="sectorItem in sectorCategories" v-bind:value="sectorItem"> 
     {{sectorItem|translate}}
   </option>
@@ -17,6 +18,7 @@
 <div v-if="sector" class="form-group">
 
           <select  class="form-control" v-model='subsector'>
+
   <option v-for="(subsectorItem,index) in subsectorCategories" v-bind:value="subsectorItem.item"> 
     {{subsectorItem.item|translate}}  
 
@@ -37,12 +39,28 @@
       <input v-model="name_surname" type="text" id="inputname_surname" class="form-control" v-bind:placeholder="'Nom i cognoms'|translate" required autofocus>
       <label for="inputtelephone_number" class="sr-only">telephone_number </label>
       <input v-model="telephone_number" type="text" id="inputtelephone_number" class="form-control" v-bind:placeholder="'Telèfon'|translate" required autofocus>
-      <label for="in																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			putdescription" class="sr-only">description </label>
+      <label for="inputdescription" class="sr-only">description </label>
+      <div v-if="currentRoute" class="form-check float-left">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="duplication_survey">
+        <label class="form-check-label" for="exampleCheck1">Duplicacion questionari</label>
+     </div>
       <input v-model="description" type="text" id="inputdescription" class="form-control" v-bind:placeholder="'Descripció activitat'|translate" required autofocus>
-      <label for="inputcomarca" class="sr-only">comarcan </label>
-      <input v-model="comarca" type="text" id="inputcomarca" class="form-control" placeholder="Comarca" required autofocus>
-      <label for="inputterritori_leader" class="sr-only">territori_leader </label>
-      <input v-model="territori_leader" type="text" id="inputterritori_leader" class="form-control" v-bind:placeholder="'Territori Leader'|translate" required autofocus>
+  <div class="form-group">
+    <select class="custom-select" v-model='comarca' >
+      <option value="" disabled selected>Comarca</option>
+  <option v-for="sectorItem in comarcas" v-bind:value="sectorItem"> 
+    {{sectorItem|translate}}
+  </option>
+</select>
+</div>
+  <div class="form-group">
+    <select class="custom-select" v-model='territori_leader' >
+      <option value="" disabled selected>Territori leader</option>
+  <option v-for="sectorItem in leaders" v-bind:value="sectorItem"> 
+    {{sectorItem|translate}}
+  </option>
+</select>
+</div>
       <label for="inputnumber_workers" class="sr-only">territori_leader </label>
       <input v-model="number_workers" type="text" id="inputnumber_workers" class="form-control" v-bind:placeholder="'Número de treballadors'|translate" required autofocus>
       <button class="btn btn-lg btn-primary btn-block" type="submit">{{status|translate}}</button>
@@ -92,10 +110,16 @@ sector : '',
     error:'',
     decoded:auth.decoded(),
     company_id:'',
-    status:''
+    status:'',
+    comarcas:[],
+    leaders:[]
     }
   },
 computed: {
+      currentRoute(){
+       //console.log(this.$route.path=='/registerAdmin')
+       return this.$route.params.id!=undefined
+    },
   sectorCategories () {
     return uniq(this.sectors.map(p => p.sector))
   },
@@ -107,6 +131,16 @@ computed: {
  getSectors(){
   this.$http.get('sectors', { })
     .then(request => this.sectors=request.data)
+    .catch(() => "")
+},
+ getComarcas(){
+  this.$http.get('comarcas', { })
+    .then(request => this.comarcas=request.data)
+    .catch(() => "")
+},
+ getLeaders(){
+  this.$http.get('leaders', { })
+    .then(request => this.leaders=request.data)
     .catch(() => "")
 },
  fetchCompany () {
@@ -182,12 +216,15 @@ computed: {
     .catch(() => this.registerFailed())
 } },
     registerSuccessful (req) {
+      if (this.$route.params.id!=undefined)
+         this.$router.replace(this.$route.query.redirect || '/updatesurvey/'+this.$route.params.id)
+        else
       this.$router.replace(this.$route.query.redirect || '/users')
     },
     registerFailed (message) {
       this.error = message
     }
-  },mounted(){this.getSectors(),this.fetchCompany()}
+  },mounted(){this.getSectors(),this.getComarcas(),this.getLeaders(),this.fetchCompany()}
 }
 </script>
 

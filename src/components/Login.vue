@@ -62,7 +62,11 @@ return auth.getLang()
       localStorage.access_token = req.data.access_token
       localStorage.refresh_token = req.data.refresh_token
       auth.user.authenticated=true;
-      this.$router.replace(this.$route.query.redirect || '/user')
+      console.log(auth.decoded())
+      if (auth.decoded().user_claims.admin==1)
+        this.$router.replace(this.$route.query.redirect || '/admin')
+      else
+       this.$router.replace(this.$route.query.redirect || '/user')
     },
     loginFailed (message) {
       this.error = message

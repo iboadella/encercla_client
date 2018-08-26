@@ -41,7 +41,7 @@
       <div class="col-12">
          <ul class="list-group">
             <li v-for ="item in items" class="list-group-item" v-on:click="setOption(item)" 
-               v-bind:style="compare(item)"  v-if="questions[selected][lang]['q'+item]!=''"> {{ questions[selected][lang]['q'+item]}}</li>
+               v-bind:style="compare(item)"  v-if="questions[selected][lang]['q'+item]!='-'"> {{ questions[selected][lang]['q'+item]}}</li>
          </ul>
       </div>
    </div>
@@ -310,8 +310,8 @@ else return 'background-color:white; color:black;'
 },
 getpoints(question,value){
   var n=2;
-  if (question.q3!='') n=3;
-  if (question.q4 != undefined && question.q4!='') n=4;
+  if (question.q3!='-') n=3;
+  if (question.q4 != undefined && question.q4!='-') n=4;
   if (value==n) return 1;
   else if (value==1) return 0;
   else if (value==2 & n==3) return 0.5

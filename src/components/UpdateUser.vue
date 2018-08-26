@@ -15,7 +15,8 @@
       <input v-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" >
 <label for="confirmInputPassword" class="sr-only">Password</label>
 <input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" placeholder="Change Password" >
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+      <button v-if="currentRoute"class="btn btn-lg btn-primary btn-block" type="submit">Actualizar</button>
+      <button v-else class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
       <span>{{error}}</span>
     </form>
   </div>
