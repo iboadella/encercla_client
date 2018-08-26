@@ -1,4 +1,5 @@
 <template>
+
   <div id="printable"  class="hello">
  <div class="container">
      <div class="col-md-4 offset-md-4" style="background-color:black;border-radius: 5ex !important;">
@@ -20,6 +21,7 @@
           
 	  <li class="list-group-item" v-for="(item,index) in filtered(strategy)">
 		  <p>
+
 		   {{questions[item][lang].proposta_millora}}
 		  </p>
 	  </li>
@@ -28,14 +30,15 @@
            <p></p>
         
   </span>
-    <b-button v-on:click="exportToPDF()">Export</b-button>
 
+    <b-button v-on:click="exportToPDF()">Export</b-button>
   </div>
 </template>
 
 <script>
 import lodash from 'lodash'
 import auth from '../auth/index.js'
+<<<<<<< HEAD
 import jsPDF from 'jspdf'
 import html2pdf from 'html2pdf.js'
 import bButton from 'bootstrap-vue/es/components/button/button';
@@ -43,15 +46,22 @@ export default {
     components: {
    'b-button': bButton,
   },
+=======
+
+export default {
+>>>>>>> 051c2c9ffde687b51ca2491be0d918010df59953
   name: 'Results',
   data () {
     return {
       data: [
-	{ name: 'IE', percent: 39.10 },
-	{ name: 'Chrome', percent: 32.51 },
-	{ name: 'Safari', percent: 13.68 },
-	{ name: 'Firefox', percent: 8.71 },
-	{ name: 'Others', percent: 6.01 }
+
+	{ name: 'Recursos', percent: 14.3 , id:1},
+	{ name: 'Fabricació i distribució', percent: 14.3, id:2 },
+	{ name: 'Ús', percent: 14.3, id:3 },
+	{ name: 'Reparació', percent: 14.3, id:4 },
+	{ name: 'Reús', percent: 14.3, id:5 },
+	{ name: 'Remanufactura', percent: 14.3, id:6 },
+        { name: 'Reciclatge', percent: 14.3, id:7 }
 ],
       questions :[],
       selected:0,
@@ -76,6 +86,7 @@ export default {
       var element= window.document.getElementById("printable");
       html2pdf(element);
     },
+
    filtered :function(strategy) {
     var questions=this.questions
    var lista =[]
@@ -109,8 +120,8 @@ computeScore(){
    }
   return acc},{})
   
-  
   var results_avg = {'score':0,'score_future':0, 'numsector':0, 'avg':0, 'avg_future':0};
+
   
   
   results_avg.score=0
@@ -118,9 +129,11 @@ computeScore(){
   for (var key in results) {
 
        results[key].avg= results[key].score/results[key].nums
+
        results[key].avg_future= results[key].score_future/results[key].nums
       results_avg.score= results_avg.score+results[key].avg;
       results_avg.score_future= results_avg.score_future+results[key].avg_future;
+
        results_avg.numsector= results_avg.numsector+1
 
   }
@@ -129,12 +142,14 @@ computeScore(){
  // results.forEach(function(result){
    //  results_avg.score= results_avg.score+result.score; results_avg.numsector= results_avg.numsector+1})
   results_avg.avg= results_avg.score*100/results_avg.numsector;
+
   results_avg.avg_future= results_avg.score_future*100/results_avg.numsector;
   this.results_avg=results_avg;
   this.company_survey.score=results_avg.avg
   this.company_survey.score_future=results_avg.avg_future
 
   this.updateCompanySurvey()
+  this.renderChart(this.$data.data);
 },
  fetchAnswers (arrays) {
   this.$http.get('answers?ids='+arrays,  { headers: auth.getAuthHeader() })
@@ -160,6 +175,7 @@ computeScore(){
                       })
     .catch(() => "")
 },
+
 updateCompanySurvey(){
   var company_survey= this.company_survey
       this.$http.put('companysurvey/'+company_survey.id, {company_survey},
@@ -172,6 +188,9 @@ updateCompanySurvey(){
          )
 },
         renderChart: function(data) {
+
+        var results=this.results;
+
           // This code is based on https://bost.ocks.org/mike/bar/2/
 	var pie=d3.layout.pie()
 		.value(function(d){return d.percent})
@@ -207,13 +226,76 @@ updateCompanySurvey(){
 		.attr({
 		    d:arc,
 		    fill:function(d,i){
-		        return color(d.data.name);
+
+                        if (results[d.data.name] == undefined) return "#DC58D8"
+                        else if (results[d.data.name].avg < 0.2) return "#F5F7F1" 
+                        else if (results[d.data.name].avg >= 0.2 && results[d.data.name].avg < 0.5) return "#D8DE23" 
+                        else return "#43AE1D";
+		        //return color(d.data.name);
 		    }
 		});
+	var text=svg.selectAll('text')
+	  .data(pie(data))
+	  .enter()
+	  .append("text")
+	  .transition()
+	  .duration(200)
+	  .attr("transform", function (d) {
+	      return "translate(" + arc.centroid(d) + ")";
+	  })
+	  .attr("dy", ".4em")
+	  .attr("text-anchor", "middle")
+	  .text(function(d){
+	      return d.data.id + "."+d.data.name;
+	  })
+	  .style({
+	      fill:'black',
+	      'font-size':'10px'
+	  });
+	var legendRectSize=20;
+	var legendSpacing=7;
+	var legendHeight=legendRectSize+legendSpacing;
+	 
+	 
+	var legend=svg.selectAll('.legend')
+	  .data(color.domain())
+	  .enter()
+	  .append('g')
+	  .attr({
+	      class:'legend',
+	      transform:function(d,i){
+		  //Just a calculation for x and y position
+		  return 'translate(-35,' + ((i*legendHeight)-65) + ')';
+	      }
+	  });
+	legend.append('rect')
+	  .attr({
+	      width:legendRectSize,
+	      height:legendRectSize,
+	      rx:20,
+	      ry:20
+	  })
+	  .style({
+	      fill:color,
+	      stroke:color
+	  });
+	 
+	legend.append('text')
+	  .attr({
+	      x:30,
+	      y:15
+	  })
+	  .text(function(d){
+	      return d;
+	  }).style({
+	      fill:'#929DAF',
+	      'font-size':'14px'
+	  });
         }
 
 	},mounted(){this.fetchCompanySurvey();
-                    this.renderChart(this.$data.data);
+                    //this.renderChart(this.$data.data);
+
 	}
         
 }
@@ -221,3 +303,6 @@ updateCompanySurvey(){
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+
+</style>
