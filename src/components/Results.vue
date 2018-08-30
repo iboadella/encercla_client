@@ -274,7 +274,7 @@ updateCompanySurvey(){
 	var legendSpacing=7;
 	var legendHeight=legendRectSize+legendSpacing;
 	 
-	var color = d3.scale.ordinal().domain(["Estratègia amb alt potencial de millora", "Estratègia amb potencial de millora mitjà", "Estratègia amb bona puntuació obtinguda","Estratègia no aplicable al sector de l'empresa"]).range(["#43AE1D","#D8DE23","#F5F7F1","#DC58D8"]);
+	var color = d3.scale.ordinal().domain(["Estratègia amb alt potencial de millora", "Estratègia amb potencial de millora mitjà", "Estratègia amb bona puntuació obtinguda","Estratègia no aplicable al sector de l'empresa"]).range(["#F5F7F1","#D8DE23","#43AE1D","#DC58D8"]);
 	var legend=svg.selectAll('.legend')
 	  .data(color.domain())
 	  .enter()

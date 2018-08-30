@@ -61,7 +61,7 @@ return false
     .then(request => {
       this.email=request.data.email
        if (request.data.type_user!=undefined && request.data.type_user==1)
-       this.admin=true})
+       this.admin=true; else this.admin=false})
     .catch(() => "")
 },
  register () {
@@ -73,7 +73,10 @@ return false
    this.$http.put(route, { username: this.email, password: this.password ,admin:this.admin},{ headers: auth.getAuthHeader() })
     .then(request => {
                       this.error="created"
-                      this.$router.replace(this.$route.query.redirect || '/registercompany/'+user_id)
+                      if (user_id!=undefined)
+                      {this.$router.replace(this.$route.query.redirect || '/registercompany/'+user_id)}
+                      else 
+                        {this.$router.replace(this.$route.query.redirect || '/registercompany')}
                        })
     .catch(() => this.error = message)
    

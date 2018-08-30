@@ -4,11 +4,20 @@
     </button>
      <button type="button" v-if="language=='cat'" v-on:click="setLang()">ES</button>
       <button type="button" v-if="language=='es'" v-on:click="setLang()">CAT</button>
+  <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+      <a href="#/conditions"class="nav-link" style="color:white">{{'Condicions Legals'|translate}}</a>
+    </li>
+    <li class="nav-item">
+      <a href="#/quisom"class="nav-link" style="color:white">{{'Qui som'|translate}}</a>
+    </li>
+
+  </ul>
      </nav>
     <div class="container">
     <router-view  />
   </div>
-</div>
+</div> 
 </template>
 
 <script>

@@ -1,7 +1,9 @@
 <template>
 
   <div class="login-wrapper border border-light" style="background-color: rgb(232,77,32)">
- 
+   <link rel="icon" type="image/png" href="http://example.com/image.png" />
+  icono <link rel="icon" type="image/png" href="http://localhost:8080/static/img/01.png" />
+<img src="http://localhost:8080/static/img/01.png" alt="Smiley face" class="img-thumbnail" height="30" width="30">
     <form class="form-signin" @submit.prevent="login">
       <span>{{language}}</span> 
       <h2 class="form-signin-heading">{{'iniciar  sessiò'|translate}}</h2>

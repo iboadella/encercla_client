@@ -1,10 +1,10 @@
 <template>
   <div class="hello">
       <div class="col-sm-12">
-      <label class="control-label">Status</label>
-  <select v-model="filter_status">
+      <label class="control-label">Any</label>
+  <select v-model="filter_any">
   	    <option value=""></option>
-        <option v-for="item in unique_status" :value="item">{{item}}</option>
+        <option v-for="item in unique_any" :value="item">{{item}}</option>
     </select>    
       <label class="control-label">Company</label>
   <select v-model="filter_company">
@@ -27,42 +27,24 @@
         <option v-for="item in unique_comarca" :value="item">{{item}}</option>
     </select>   
        </div>  
-<button class="btn btn-primary" type="button" @click="showModalConfirmation">
+<button class="btn btn-primary" type="button" @click="deleteSurvey">
 <icon name="remove"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
 <button class="btn btn-primary" type="button" @click="downloadSurvey">
 <icon name="download"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
 <button class="btn btn-primary" type="button" @click="downloadAllSurvey">
-<icon name="cloud-download"  scale="1.5" style="vertical-align: middle;"/></button>
+<icon name="download"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
 <button class="btn btn-primary" type="button" @click="downloadAnswers">
-<icon name="file-excel-o"  scale="1.5" style="vertical-align: middle;"/></button>
+<icon name="download"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
-
-Puntuacio
- <icon name="circle" scale="1.5"  style="hpadding: 2px;
-    height: 1em;
-    background-color: white;
-    padding-bottom: 2px;" color="red" />  (0-49)
- <icon name="circle" scale="1.5"  style="hpadding: 2px;
-    height: 1em;
-    background-color: white;
-    padding-bottom: 2px;" color="orange" /> (50-69)
- <icon name="circle" scale="1.5"  style="hpadding: 2px;
-    height: 1em;
-    background-color: white;
-    padding-bottom: 2px;" color="green" /> (70-100)
 <table class="table table-light table-bordered">
   <thead>
     <tr>
       <th scope="col"></th>
       <th scope="col">Nom compania</th>
-      <th scope="col">Nom questionari</th>
-      <th scope="col">Estat</th>
-      <th scope="col">Ultima data modificacio</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>Puntuacio obtinguda</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>Puntuacio futurible</th>
+      
       
     </tr>
   </thead>
@@ -70,18 +52,7 @@ Puntuacio
     <tr v-for="(item,index) in filtered_surveys">
     <td><input type="checkbox" v-model="item.selected" v-on:click="setOption(index)"></td>
      <td>{{item.commercial_name}}</td>
-    <td color="white"><a v-bind:href ="'#/questions/'+item.id" style="color:black">{{item.name_survey}}  </a></td>
-    
-     <td>{{item.status}}</td>
-     <td>{{item.last_modified}}</td>
-     <td  v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score)"/>
-       {{item.score}}</td>
-                  <td v-else>       
-       - </td>
-     <td  v-if="item.status=='submitted'">        <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score+item.score_future)"/>
-       {{item.score + item.score_future}}</td>
-                  <td v-else>       
-       - </td>
+
      
 </tr>
 </tbody>
@@ -89,12 +60,6 @@ Puntuacio
 
     <b-modal ref="myModalError" id="myModalError">
     {{this.error}}
-     </b-modal>
-         </b-modal  hide-footer>
-         <b-modal ref="Confirmation" id="Confirmation" hide-footer>
-      Estas segur
-      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalConfirmation()">Cancel</button>
-      <button class="btn btn-primary" variant="outline-danger" block @click="deleteSurvey()">OK</button>
      </b-modal>
   </div>
 </template>
@@ -107,9 +72,7 @@ import 'vue-awesome/icons/clipboard'
 import 'vue-awesome/icons/line-chart'
 import 'vue-awesome/icons/remove'
 import 'vue-awesome/icons/download'
-import 'vue-awesome/icons/cloud-download'
 import 'vue-awesome/icons/copy'
-import 'vue-awesome/icons/file-excel-o'
 import Icon from 'vue-awesome/components/Icon'
 import bModal from 'bootstrap-vue/es/components/modal/modal'
 import XLSX from 'xlsx';
@@ -120,7 +83,7 @@ export default {
     Icon,
     'b-modal': bModal
   },
-  name: 'UserPage',
+  name: 'Ranking',
   data () {
     return {
       user: 'dpiscia',
@@ -130,7 +93,7 @@ export default {
       company_surveys:[],
       error:'',
       selected:'',
-      filter_status:'',
+      filter_any:'',
       filter_sector:'',
       filter_subsector:'',
       filter_comarca:'',
@@ -141,8 +104,8 @@ export default {
     }
   },
   computed:{
-    unique_status () {
-    return uniq(this.filtered.map(p => p.status))
+    unique_any () {
+    return uniq(this.filtered.map(p => p.pub_date))
   },
       unique_company () {
     return uniq(this.filtered.map(p => p.commercial_name))
@@ -158,10 +121,11 @@ export default {
   },
   filtered_surveys(){
   	var filtered=this.company_surveys
+    filtered=_.filter(filtered, {status:'submitted' });
     if (this.filter_company!='')
   	filtered=_.filter(filtered, {commercial_name:this.filter_company });
-     if (this.filter_status!='')
-    filtered=_.filter(filtered, {status:this.filter_status });
+    // if (this.filter_status!='')
+    //filtered=_.filter(filtered, {status:this.filter_status });
       if (this.filter_sector!='')
     filtered=_.filter(filtered, {sector:this.filter_sector});
       if (this.filter_subsector!='')
@@ -173,18 +137,6 @@ export default {
   }
   }
   ,methods: {
-        showModalConfirmation () {
-      this.$refs.Confirmation.show()
-    },
-    hideModalConfirmation () {
-      this.$refs.Confirmation.hide()
-    },
-    getColor(score){
-      console.log(score)
-      if (score>0 && score<50) return "red"
-      if (score>=50 && score <70) return "orange"
-      else return "green"
-    },
   	downloadAnswers(){
       this.$http.get('dataExcel', {  headers: auth.getAuthHeader() })
     .then(request => {
@@ -256,7 +208,6 @@ deleteSurvey(){
     this.showModalError()
   }
   else{
-    this.hideModalConfirmation()
       this.$http.delete('companysurvey/'+selected, { headers: auth.getAuthHeader() })
     .then(request => {
     console.log("deleted")

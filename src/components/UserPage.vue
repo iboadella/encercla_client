@@ -1,14 +1,14 @@
 <template>
   <div class="hello">
     <h4  style="color:white">{{company.commercial_name}}
-    <a href="#/registercompany"> 
+    <a href="#/updateuser"> 
     <icon name="edit"  color="white" scale="1.5" style="vertical-align: middle;"/>
       </a>
       </h4>
 <button class="btn btn-primary" type="button" @click="showModal">
 <icon name="plus-circle"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
-<button class="btn btn-primary" type="button" @click="deleteSurvey">
+<button class="btn btn-primary" type="button" @click="showModalConfirmation">
 <icon name="remove"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
 <button class="btn btn-primary" type="button" @click="duplicate()">
@@ -33,10 +33,15 @@
       <td v-if="item.status!='created'" color="white"><a  v-bind:href ="'#/results/'+item.id" style="color:black">{{item.name_survey}}  </a></td>   
      <td>{{item.status}}</td>
      <td>{{item.last_modified}}</td>
-     <td>       <icon name="circle" style="height: 1em" color="green"/>
+     <td v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score)"/>
        {{item.score}}</td>
-     <td>       <icon name="circle" style="height: 1em" color="green"/>
+           <td v-else>       
+       - </td>
+
+     <td  v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score+item.score_future)"/>
        {{item.score + item.score_future}}</td>
+                  <td v-else>       
+       - </td>
      
 </tr>
 </tbody>
@@ -58,7 +63,7 @@
     <b-modal ref="myModalError" id="myModalError">
     {{this.error}}
      </b-modal>
-         <b-modal ref="instructions" id="instructions">
+         <b-modal ref="instructions" id="instructions" hide-footer>
     1. Fer clic al botó 'Crear'. Això generarà un qüestionari amb nom automàtic (nom empresa+any+versió) i mostrarà la pantalla amb la primera pregunta.
 2. Cada pregunta està composada dels següents elements:
 a) Barra de progrés: mostra tants punts com preguntes a respondre. Els punts en verd representen preguntes que ja s'han respòs, mentre que els negres representen preguntes pendents.
@@ -66,6 +71,13 @@ b) Enunciat de la pregunta: situa el tema que s'està avaluant
 c) Més informació sobre la pregunta: la icona (?) mostra informació extra sobre el tema avaluat
 d) Possibles respostes: 2,3 o 4 possibles respostes entre les que s'ha d'escollir la situació més propera a la realitat de l'empresa.
 e) Botó d'adjuntar document: 
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalInstructions">Cancel</button>
+      <button class="btn btn-primary" variant="outline-danger" block @click="goToSurvey()">OK</button>
+     </b-modal  hide-footer>
+         <b-modal ref="Confirmation" id="Confirmation" hide-footer>
+      Estas segur
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalConfirmation()">Cancel</button>
+      <button class="btn btn-primary" variant="outline-danger" block @click="deleteSurvey()">OK</button>
      </b-modal>
   </div>
 </template>
@@ -99,6 +111,17 @@ export default {
       selected:''
     }
   },methods: {
+    getColor(score){
+
+      if (score>0 && score<50) return "red"
+      else if (score>=50 && score <70.0) return "orange"
+      else return "green"
+    },
+    goToSurvey(){
+
+      
+       this.$router.replace(this.$route.query.redirect || '/questions/'+this.company_surveys[this.company_surveys.length - 1].id)
+    },
 
 duplicate(){
   
@@ -130,6 +153,7 @@ deleteSurvey(){
     this.showModalError()
   }
   else{
+      this.hideModalConfirmation()
       this.$http.delete('companysurvey/'+selected, { headers: auth.getAuthHeader() })
     .then(request => {
     console.log("deleted")
@@ -214,6 +238,12 @@ DARI_needed(){
     },
     hideModalError () {
       this.$refs.myModalError.hide()
+    },
+    showModalConfirmation () {
+      this.$refs.Confirmation.show()
+    },
+    hideModalConfirmation () {
+      this.$refs.Confirmation.hide()
     },
 setFileName(){
 		this.DARI_filename=this.$refs.file.files[0].name;

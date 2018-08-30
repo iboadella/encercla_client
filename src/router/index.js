@@ -13,6 +13,8 @@ import UpdateUser from '@/components/UpdateUser'
 import EditSurvey from '@/components/EditSurvey'
 import ManageSurvey from '@/components/ManageSurvey'
 import quisom from '@/components/quisom'
+import Ranking from '@/components/Ranking'
+import LegalConditions from '@/components/LegalConditions'
 import auth from '../auth/index.js'
 Vue.use(Router)
 
@@ -24,14 +26,25 @@ const router= new Router({
       component: Login
     },
         {
+      path: '/conditions',
+      name: 'LegalConditions',
+      component: LegalConditions
+    },
+
+        {
       path: '/quisom',
       name: 'quisom',
       component: quisom
-    },
-{
+    },{
       path: '/registerAdmin',
       name: 'Register',
       component: Register,
+      secure: true,
+    },
+  {
+      path: '/Ranking',
+      name: 'Ranking',
+      component: Ranking,
       secure: true,
     },
  {

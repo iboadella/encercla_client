@@ -18,7 +18,7 @@
     <a href="/#/registerAdmin"><button class="btn btn-primary" type="button"  >
 <icon name="plus-circle"  scale="1.5" style="vertical-align: middle;"/></button>
 </button></a>
-<button class="btn btn-primary" type="button"  @click="deleteUser()">
+<button class="btn btn-primary" type="button"  @click="showModalConfirmation()">
 <icon name="remove"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
 <button class="btn btn-primary" type="button" @click="editUser()">
@@ -51,6 +51,11 @@
 </div>
     <b-modal ref="myModalError" id="myModalError">
     {{this.error}}
+     </b-modal>
+              <b-modal ref="Confirmation" id="Confirmation" hide-footer>
+      Estas segur
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalConfirmation()">Cancel</button>
+      <button class="btn btn-primary" variant="outline-danger" block @click="deleteUser()">OK</button>
      </b-modal>
 </div>
 </template>
@@ -103,6 +108,12 @@ export default {
     return filtered
   }
   },methods: {
+    showModalConfirmation () {
+      this.$refs.Confirmation.show()
+    },
+    hideModalConfirmation () {
+      this.$refs.Confirmation.hide()
+    },
     setOption(index){
 
     this.users.forEach(function(item,i){ if (i!=index) item.selected=false})
@@ -160,6 +171,7 @@ deleteUser(){
     this.showModalError()
   }
   else{
+    this.hideModalConfirmation()
       this.$http.delete('user/'+selected, { headers: auth.getAuthHeader() })
     .then(request => {
     console.log("deleted")

@@ -2,6 +2,11 @@
 <div class="container bg-primary">
    <div class="row">
       <div class="col-12">
+        <span>Company {{company_survey.name_survey}}
+          <icon name="info-circle"   scale="1.5" style="vertical-align: middle;"/></span>
+      </div>
+      <div class="col-12">
+        
         <span v-on:click="moveLeft()">
          <icon name="arrow-left"  scale="1.5" class="float-left"  style="height: 1em" />
        </span>
@@ -21,9 +26,10 @@
    <div class="row" style="padding-top: 1em;">
       <div class="col-12">
         Score: {{this.answers[this.selected].score}} {{selected+1 +'/'+answers.length}}
+        <span>{{error}}</span>
          <h5 class="text-left" style="color:white">
             {{questions[selected][lang].statement}}
-            <span id="exButton2" v-on:click="showModaltooltip()" >
+            <span id="exButton2" v-on:mouseover="showModaltooltip()" >
                <icon name="question-circle"   scale="1.5" style="vertical-align: middle;"/>
             </span>
             <div id="dav" class="container" style="max-width:100%">
@@ -59,8 +65,8 @@
    </div>
    <div class="row" style="padding-top:1em">
       <div class="col-12">
-         <input v-model="answers[selected].justification_text" type="text" id="inputcommercial_name" class="form-control" required autofocus @input="onInput()" 
-            style="height:100px;background-color:#e84d20; color:white; ">
+         <textarea maxlength="500" v-model="answers[selected].justification_text" type="text" id="inputcommercial_name" class="form-control" required autofocus @input="onInput()" 
+            style="height:100px;background-color:#e84d20; color:white; "></textarea>
       </div>
    </div>
    <div class="row" style="padding-top:2em">
@@ -69,8 +75,8 @@
          <label class="form-check-label" for="exampleCheck1"> Futurible</label>
       </div>
       <div class="col-12">
-         <input v-model="answers[selected].future_justification_text" type="text" id="inputcommercial_name" class="form-control" :placeholder="questions[selected][lang].futurible" required autofocus @input="onInput()" 
-            style="height:100px;background-color:#e84d20; color:white; ">
+         <textarea maxlength="500" v-model="answers[selected].future_justification_text" type="text" id="inputcommercial_name" class="form-control " :placeholder="questions[selected][lang].futurible" required autofocus @input="onInput()" 
+            style="height:100px;background-color:#e84d20; color:white; "></textarea>
       </div>
    </div>
    <!--div class="form-group">
@@ -111,6 +117,7 @@ import 'vue-awesome/icons/question-circle'
 import 'vue-awesome/icons/remove'
 import 'vue-awesome/icons/arrow-right'
 import 'vue-awesome/icons/arrow-left'
+import 'vue-awesome/icons/info-circle'
 import bButton from 'bootstrap-vue/es/components/button/button';
 import bFormRadio from 'bootstrap-vue/es/components/form-radio/form-radio';
 import bTooltip from 'bootstrap-vue/es/components/tooltip/tooltip';
@@ -237,6 +244,9 @@ onInput(e) {
 
    },
  submitSurvey() {
+
+  if (!this.submittable)
+    return
   this.company_survey.status="submitted"
   var company_survey= this.company_survey
   this.$http.put('companysurvey/'+company_survey.id, {company_survey},
@@ -323,22 +333,31 @@ setOption(value){
         	this.updateAnswer(this.answers[this.selected])
 },
 handleFileUpload(){
-		this.answers[this.selected].justification_file=this.$refs.file.files[0].name;
-		let formData = new FormData();
-		formData.append('file', this.$refs.file.files[0]);
-		this.$http.post( 'http://localhost:5000/upload?answer='+this.answers[this.selected].id,
-		  formData,
-		  {
-		    headers: {
-			'Content-Type': 'multipart/form-data'
-		    }
-		  }
-		).then(request=> {
-		  this.updateAnswer(this.answers[this.selected]);
-		})
-		.catch(function(){
-		  console.log('FAILURE!!');
-		});
+
+      /*if (this.$refs.file.files[0].size>20000000)
+    {
+      this.error="file size too big.MAX is 20MB"
+      return
+    }*/
+    var headers=auth.getAuthHeader()
+    headers['Content-Type']='multipart/form-data'
+    this.answers[this.selected].justification_file=this.$refs.file.files[0].name;
+    let formData = new FormData();
+    formData.append('file', this.$refs.file.files[0]);
+    this.$http.post( 'upload?answer='+this.answers[this.selected].id,
+      formData,
+      {
+        headers: 
+
+      headers
+        
+      }
+    ).then(request=> {
+      this.updateAnswer(this.answers[this.selected]);
+    })
+    .catch(function(){
+      console.log('FAILURE!!');
+    });
 	}
 },mounted(){this.fetchCompanySurvey()}
 }

@@ -6,7 +6,7 @@
     <icon name="user" style="height: 1em;vertical-align: middle;" scale="4"/></a></li>
     <li class="list-group-item"><a href="#/admin/surveys">Visualitzacio de questionaris
 		<icon name="clipboard" style="height: 1em;vertical-align: middle;" scale="4"/></a> </li>
-    <li class="list-group-item">Ranquing de resultats
+    <li class="list-group-item"><a href="#/ranking">Ranquing de resultats</a>
 		<icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="4"/></li>
     <li class="list-group-item">Extraccio d'informes
 		<icon name="download" style="height: 1em;vertical-align: middle;" scale="4"/></li>

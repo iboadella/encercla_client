@@ -15,6 +15,10 @@
       <input v-model="password" type="password" id="inputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
 <label for="confirmInputPassword" class="sr-only">Password</label>
 <input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
+      <div v-if="!currentRoute" class="form-check float-left">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="accept">
+        <label class="form-check-label" for="exampleCheck1"><a href="#/conditions"> Accepto les condicions</a></label>
+     </div>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Registrar</button>
       <span>{{error|translate}}</span>
     </form>
@@ -32,7 +36,8 @@ export default {
       password: '',
       confirmPassword : '',
       error:'',
-      admin:true
+      admin:true,
+      accept:false
     }
   },
   computed: {
@@ -54,6 +59,7 @@ return false
   this.error='';
   if (!this.comparePasswords)
     return
+
   if (this.currentRoute)
   {
    this.$http.post('adminregistration', { username: this.email, password: this.password ,admin:this.admin},{ headers: auth.getAuthHeader() })
@@ -65,6 +71,8 @@ return false
    
   }
    else {
+    if (!this.accept)
+      return 
   this.$http.post('registration', { username: this.email, password: this.password })
     .then(request => this.registerSuccessful(request))
     .catch(() => this.loginFailed())

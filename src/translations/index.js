@@ -1,5 +1,6 @@
 import Vue from 'vue'
 export default {
+  "Qui som":"Quienes somos",
   "Correu electronic": "Correo electronico",
   "iniciar  sessiò": "iniciar session",
   "contrasenya":"contraseña",

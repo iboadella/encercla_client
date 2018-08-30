@@ -56,7 +56,8 @@ export default {
   	 fetchCompany () {
      this.$http.get('company?user_id='+this.$route.params.id, { headers: auth.getAuthHeader() })
     .then(request => {this.company=request.data
-                       this.fetchSurvey()})
+                       this.fetchQuestions()
+                       })
     .catch(() => "")
 },
     fetchSurvey () {
@@ -73,6 +74,7 @@ export default {
   this.$http.get('questions', { headers: auth.getAuthHeader() })
     .then(request => {request.data.data.map(function(item){item.selected=false});
     	              this.questions=request.data.data;
+                    this.fetchSurvey()
     	              
                       
                 })
@@ -80,7 +82,7 @@ export default {
 }
 
 
-  },mounted(){this.fetchCompany(),this.fetchQuestions()}
+  },mounted(){this.fetchCompany()}
 }
 </script>
 
