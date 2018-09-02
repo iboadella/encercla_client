@@ -1,12 +1,13 @@
 <template>
   <div class="hello">
+    
       <div class="col-sm-12">
-      <label class="control-label">Status</label>
+      <label class="control-label">{{'Estat'|translate}}</label>
   <select v-model="filter_status">
   	    <option value=""></option>
         <option v-for="item in unique_status" :value="item">{{item}}</option>
     </select>    
-      <label class="control-label">Company</label>
+      <label class="control-label">{{'Empresa'|translate}}</label>
   <select v-model="filter_company">
   	    <option value=""></option>
         <option v-for="item in unique_company" :value="item">{{item}}</option>
@@ -40,7 +41,7 @@
 <icon name="file-excel-o"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
 
-Puntuacio
+{{'Puntuació'|translate}}
  <icon name="circle" scale="1.5"  style="hpadding: 2px;
     height: 1em;
     background-color: white;
@@ -57,12 +58,12 @@ Puntuacio
   <thead>
     <tr>
       <th scope="col"></th>
-      <th scope="col">Nom compania</th>
-      <th scope="col">Nom questionari</th>
-      <th scope="col">Estat</th>
-      <th scope="col">Ultima data modificacio</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>Puntuacio obtinguda</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>Puntuacio futurible</th>
+      <th scope="col">{{'Nom empresa'|translate}}</th>
+      <th scope="col">{{'Nom qüestionari'|translate}}</th>
+      <th scope="col">{{'Estat'|translate}}</th>
+      <th scope="col">{{'Última data de modificació'|translate}}</th>
+      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació obtinguda'|translate}}</th>
+      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació futurible'|translate}}</th>
       
     </tr>
   </thead>
@@ -72,7 +73,7 @@ Puntuacio
      <td>{{item.commercial_name}}</td>
     <td color="white"><a v-bind:href ="'#/questions/'+item.id" style="color:black">{{item.name_survey}}  </a></td>
     
-     <td>{{item.status}}</td>
+     <td>{{getStatus(item.status)|translate}}</td>
      <td>{{item.last_modified}}</td>
      <td  v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score)"/>
        {{item.score}}</td>
@@ -88,12 +89,12 @@ Puntuacio
 </table>
 
     <b-modal ref="myModalError" id="myModalError">
-    {{this.error}}
+    {{this.error|translate}}
      </b-modal>
          </b-modal  hide-footer>
          <b-modal ref="Confirmation" id="Confirmation" hide-footer>
-      Estas segur
-      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalConfirmation()">Cancel</button>
+      {{'Estàs segur d’esborrar el qüestionari?'|translate}}
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalConfirmation()">{{'Enrere'|translate}}</button>
       <button class="btn btn-primary" variant="outline-danger" block @click="deleteSurvey()">OK</button>
      </b-modal>
   </div>
@@ -173,6 +174,13 @@ export default {
   }
   }
   ,methods: {
+          getStatus (status) {
+    if (status=='submitted') {
+      return 'Enviat'}
+      else {
+        return 'Pendent'
+      }
+    },
         showModalConfirmation () {
       this.$refs.Confirmation.show()
     },
@@ -225,12 +233,18 @@ downloadAllSurvey(){
 },
 downloadSurvey(){
   
-  var selected;
+  var selected,status;
   this.filtered.forEach(function(item,index){if (item.selected)  selected=item.id_surveycompany})
+  this.filtered.forEach(function(item,index){if (item.selected)  status=item.status})
   if (selected==undefined)
   { 
-    this.error="you have to select one survey"
+    this.error="has de seleccionar un qüestionari"
     this.showModalError()
+  }
+  else if (status=='created'){
+    this.error="No es pot fer servir aquesta funcionalitat amb un qüestionari pendent"
+    this.showModalError()
+
   }
   else{
       this.$http.get('surveyFiles/'+selected, { responseType: 'arraybuffer', headers: auth.getAuthHeader() })
@@ -248,12 +262,18 @@ downloadSurvey(){
 },
 deleteSurvey(){
   
-  var selected;
+  var selected,status;
   this.filtered.forEach(function(item,index){if (item.selected)  selected=item.id_surveycompany})
+  this.filtered.forEach(function(item,index){if (item.selected)  status=item.status})
   if (selected==undefined)
   { 
-    this.error="you have to select one survey"
+    this.error="has de seleccionar un qüestionari"
     this.showModalError()
+  }
+  else if (status=='submitted'){
+    this.error="No es pot esborrar un qüestionari enviat"
+    this.showModalError()
+
   }
   else{
     this.hideModalConfirmation()

@@ -3,11 +3,11 @@
   <div id="printable"  class="hello">
  <div class="container">
      <div class="col-md-4 offset-md-4" style="background-color:black;border-radius: 5ex !important;">
-      <p class="text-light"> Empresa  {{company_survey.company}} </p>
-      <p class="text-light"> Nom questionari : {{company_survey.name_survey}}</p>
-      <p class="text-light"> Data d'avaluacio {{company_survey.pub_date}}</p>
- <p class="text-light"> Punctuacio obtinguda  {{results_avg.avg}}/100</p>
-<p class="text-light"> Punctuacio futurible  {{results_avg.avg+results_avg.avg_future}}/100</p>
+      <p class="text-light"> {{'Nom empresa'|translate}}  {{company_survey.company}} </p>
+      <p class="text-light"> {{'Nom qüestionari'|translate}} : {{company_survey.name_survey}}</p>
+      <p class="text-light"> {{"Data d'avaluació"|translate}} : {{company_survey.pub_date}}</p>
+ <p class="text-light"> {{'Puntuació obtinguda'|translate}}  {{results_avg.avg}}/100</p>
+<p class="text-light"> {{'Puntuació futurible'|translate}}  {{results_avg.avg+results_avg.avg_future}}/100</p>
     </div>
   </div>
   <div id="chart" class="chart">
@@ -15,16 +15,15 @@
   
 
   <p class="text-light">
-	Propostes de millora per estrategia;
+	{{'Propostes de millora per estratègia'|translate}}
   </p>
 
   <span v-for="(value,strategy) in results" class="demo">
          <li class="list-group-item" style="color:#e84d20;border-top-left-radius: 5ex !important;
-          border-top-right-radius: 5ex !important;">{{strategy}}</li>
+          border-top-right-radius: 5ex !important;">{{strategy|translate}}</li>
           <span v-if="value.avg<1">
              <li class="list-group-item" v-for="(item,index) in proposals[strategy][lang]">
       <p>
-
        {{item}}
       </p>
    
@@ -85,6 +84,7 @@ export default {
   },
   computed:{
        lang: function () {
+        
       return this.$i18n.locale()
     }
 
@@ -207,6 +207,8 @@ updateCompanySurvey(){
 },
         renderChart: function(data) {
 
+   var i18n= this.$i18n;
+   
         var results=this.results;
 
           // This code is based on https://bost.ocks.org/mike/bar/2/
@@ -264,7 +266,7 @@ updateCompanySurvey(){
 	  .attr("dy", ".4em")
 	  .attr("text-anchor", "middle")
 	  .text(function(d){
-	      return d.data.id + "."+d.data.name;
+	      return d.data.id + "."+i18n.translate(d.data.name);
 	  })
 	  .style({
 	      fill:'black',
@@ -274,7 +276,7 @@ updateCompanySurvey(){
 	var legendSpacing=7;
 	var legendHeight=legendRectSize+legendSpacing;
 	 
-	var color = d3.scale.ordinal().domain(["Estratègia amb alt potencial de millora", "Estratègia amb potencial de millora mitjà", "Estratègia amb bona puntuació obtinguda","Estratègia no aplicable al sector de l'empresa"]).range(["#F5F7F1","#D8DE23","#43AE1D","#DC58D8"]);
+	var color = d3.scale.ordinal().domain([i18n.translate("Estratègia amb alt potencial de millora"), i18n.translate("Estratègia amb potencial de millora mitjà"), i18n.translate("Estratègia amb bona puntuació obtinguda"),i18n.translate("Estratègia no aplicable al sector de l'empresa")]).range(["#F5F7F1","#D8DE23","#43AE1D","#DC58D8"]);
 	var legend=svg.selectAll('.legend')
 	  .data(color.domain())
 	  .enter()

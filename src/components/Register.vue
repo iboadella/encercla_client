@@ -17,7 +17,7 @@
 <input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
       <div v-if="!currentRoute" class="form-check float-left">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="accept">
-        <label class="form-check-label" for="exampleCheck1"><a href="#/conditions"> Accepto les condicions</a></label>
+        <label class="form-check-label" for="exampleCheck1"><a href="#/conditions"> {{'Al registrar-te acceptes les nostres Condicions i la Política de privacitat'|translate}}</a></label>
      </div>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Registrar</button>
       <span>{{error|translate}}</span>
@@ -72,7 +72,8 @@ return false
   }
    else {
     if (!this.accept)
-      return 
+      {this.error='Has de acceptar les condicions legals';
+       return }
   this.$http.post('registration', { username: this.email, password: this.password })
     .then(request => this.registerSuccessful(request))
     .catch(() => this.loginFailed())

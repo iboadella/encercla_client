@@ -10,7 +10,7 @@ export default {
   name: 'LegalCondition',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Condicions legals'
     }
   }
 }

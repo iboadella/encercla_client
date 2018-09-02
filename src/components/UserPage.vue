@@ -18,11 +18,11 @@
   <thead>
     <tr>
       <th scope="col"></th>
-      <th scope="col">Nom questionari</th>
-      <th scope="col">Estat</th>
-      <th scope="col">Ultima data modificacio</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>Puntuacio obtinguda</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>Puntuacio futurible</th>
+      <th scope="col">{{'Nom qüestionari'|translate}}</th>
+      <th scope="col">{{'Estat'|translate}}</th>
+      <th scope="col">{{'Última data de modificació'|translate}}</th>
+      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació obtinguda'|translate}} obtinguda</th>
+      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació futurible'|translate}}</th>
       
     </tr>
   </thead>
@@ -31,7 +31,7 @@
     <td><input type="checkbox" v-model="item.selected" v-on:click="setOption(index)"></td>
     <td v-if="item.status=='created'" color="white"><a  v-bind:href ="'#/questions/'+item.id" style="color:black">{{item.name_survey}}  </a></td>
       <td v-if="item.status!='created'" color="white"><a  v-bind:href ="'#/results/'+item.id" style="color:black">{{item.name_survey}}  </a></td>   
-     <td>{{item.status}}</td>
+     <td>{{getStatus(item.status)|translate}}</td>
      <td>{{item.last_modified}}</td>
      <td v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score)"/>
        {{item.score}}</td>
@@ -48,7 +48,7 @@
 </table>
     <b-modal ref="myModalRef" hide-footer title="">
       <div class="d-block text-center">
-        <h3>Crear un formulari</h3>
+        <h3>{{'Qüestionari nou'|translate}}</h3>
 
 <div v-if="DARI_needed()==true" class="custom-file">
       <label class="custom-file-label" for="file">Adjuntar DARI </label>
@@ -57,8 +57,8 @@
       
       {{error}}
       </div>
-      <button class="btn btn-primary" variant="outline-danger" block @click="hideModal">Cancel</button>
-      <button class="btn btn-primary" variant="outline-danger" block @click="createCompanySurvey">Create</button>
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModal">{{'Enrere'|translate}}</button>
+      <button class="btn btn-primary" variant="outline-danger" block @click="createCompanySurvey">{{'Crear'|translate}}</button>
     </b-modal>
     <b-modal ref="myModalError" id="myModalError">
     {{this.error}}
@@ -71,12 +71,12 @@ b) Enunciat de la pregunta: situa el tema que s'està avaluant
 c) Més informació sobre la pregunta: la icona (?) mostra informació extra sobre el tema avaluat
 d) Possibles respostes: 2,3 o 4 possibles respostes entre les que s'ha d'escollir la situació més propera a la realitat de l'empresa.
 e) Botó d'adjuntar document: 
-      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalInstructions">Cancel</button>
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalInstructions">{{'Enrere'|translate}}</button>
       <button class="btn btn-primary" variant="outline-danger" block @click="goToSurvey()">OK</button>
      </b-modal  hide-footer>
          <b-modal ref="Confirmation" id="Confirmation" hide-footer>
-      Estas segur
-      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalConfirmation()">Cancel</button>
+      {{'Estàs segur d’esborrar el qüestionari?'|translate}}
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalConfirmation()">{{'Enrere'|translate}}</button>
       <button class="btn btn-primary" variant="outline-danger" block @click="deleteSurvey()">OK</button>
      </b-modal>
   </div>
@@ -110,7 +110,17 @@ export default {
       error:'',
       selected:''
     }
-  },methods: {
+  } , computed:{
+
+  }
+,methods: {
+      getStatus (status) {
+    if (status=='submitted') {
+      return 'Enviat'}
+      else {
+        return 'Pendent'
+      }
+    },
     getColor(score){
 
       if (score>0 && score<50) return "red"

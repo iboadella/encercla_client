@@ -1,5 +1,6 @@
 <template>
   <div class="hello">
+        <h4>{{"Llistat de preguntes que apliquen a l'empresa"|translate}}</h4>
         <table class="table table-light table-bordered">
   <thead>
   	
@@ -16,7 +17,7 @@
 </tr>
 </tbody>
 </table>
-      <button v-on:click="updateSurvey()" variant="success">Desa</button>
+      <b-button v-on:click="updateSurvey()" variant="success">{{'Actualitzar'|translate}}</b-button>
 
   </div>
 </template>

@@ -4,19 +4,19 @@
   <div class="register-wrapper border border-light">
    
     <form class="form-signin" @submit.prevent="register">
-      <h2 class="form-signin-heading">Change email</h2>
+      <h2 class="form-signin-heading">{{"Modificar dades d'usuari"|translate}}</h2>
       <label for="inputEmail" class="sr-only">Email address</label>
       <input v-model="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
       <div v-if="currentRoute" class="form-check float-left">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="admin">
-        <label class="form-check-label" for="exampleCheck1">Administrator</label>
+        <label class="form-check-label" for="exampleCheck1">{{'Super-usuari'|translate}}</label>
      </div>
       <label for="inputPassword" class="sr-only">Password</label>
       <input v-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" >
 <label for="confirmInputPassword" class="sr-only">Password</label>
 <input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" placeholder="Change Password" >
-      <button v-if="currentRoute"class="btn btn-lg btn-primary btn-block" type="submit">Actualizar</button>
-      <button v-else class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+      <button v-if="currentRoute"class="btn btn-lg btn-primary btn-block" type="submit">{{'Actualitzar'|translate}}</button>
+      <button v-else class="btn btn-lg btn-primary btn-block" type="submit">{{'Actualitzar'|translate}}</button>
       <span>{{error}}</span>
     </form>
   </div>
@@ -43,9 +43,10 @@ export default {
        return this.$route.path=='/updateuseradmin'
     },
   comparePasswords () {
-    if (this.password === this.confirmPassword ) return true
+    if (this.password=='') return true
+    else if (this.password === this.confirmPassword ) return true
     else {
-     error='Passwords don\'t match';
+     this.error=this.$i18n.translate('contrasenya no coincideix');
 return false
     }
 }
@@ -65,6 +66,8 @@ return false
     .catch(() => "")
 },
  register () {
+    if (!this.comparePasswords)
+    return
     var route='user'
 
   if (this.$route.query.id!=undefined)

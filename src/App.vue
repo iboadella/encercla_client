@@ -5,8 +5,11 @@
      <button type="button" v-if="language=='cat'" v-on:click="setLang()">ES</button>
       <button type="button" v-if="language=='es'" v-on:click="setLang()">CAT</button>
   <ul class="navbar-nav ml-auto">
+          <li v-if="inside" style="cursor: pointer" class="nav-item">
+      <a v-on:click="logout()" class="nav-link" style="color:white">{{'Logout'|translate}}</a>
+    </li>
         <li class="nav-item">
-      <a href="#/conditions"class="nav-link" style="color:white">{{'Condicions Legals'|translate}}</a>
+      <a href="#/conditions"class="nav-link" style="color:white">{{'Condicions legals'|translate}}</a>
     </li>
     <li class="nav-item">
       <a href="#/quisom"class="nav-link" style="color:white">{{'Qui som'|translate}}</a>
@@ -32,6 +35,11 @@ export default {
   computed:{
     language: function () {
       return this.$i18n.locale()
+    },
+    inside:function(){
+      console.log(this.$route.path=='/')
+      console.log(!(this.$route.path=='/'))
+      return !(this.$route.path=='/')
     }
 },
 methods:{
@@ -46,6 +54,11 @@ methods:{
     this.$i18n.set('es');
       else this.$i18n.set('cat');
   }
+  },
+  logout(){
+    localStorage.removeItem('access_token')
+    //auth.user.authenticated=false
+    this.$router.push('/')
   },
   getLang(){
     console.log(auth.getLang())

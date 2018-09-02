@@ -2,8 +2,10 @@
 <div class="container bg-primary">
    <div class="row">
       <div class="col-12">
-        <span>Company {{company_survey.name_survey}}
-          <icon name="info-circle"   scale="1.5" style="vertical-align: middle;"/></span>
+        <span>{{'Empresa'|translate}} {{company_survey.name_survey}}
+          <span v-on:mouseover="showModalInstructions()"><icon  name="info-circle"   scale="1.5" style="vertical-align: middle;"/>
+                </span>
+          </span>
       </div>
       <div class="col-12">
         
@@ -25,8 +27,8 @@
     </div>
    <div class="row" style="padding-top: 1em;">
       <div class="col-12">
-        Score: {{this.answers[this.selected].score}} {{selected+1 +'/'+answers.length}}
-        <span>{{error}}</span>
+       {{selected+1 +'/'+answers.length}}
+        <span>{{error|translate}}</span>
          <h5 class="text-left" style="color:white">
             {{questions[selected][lang].statement}}
             <span id="exButton2" v-on:mouseover="showModaltooltip()" >
@@ -73,11 +75,15 @@
       <div class="col-sm-2">
          <input type="checkbox" class="form-check-input" v-model="answers[selected].future">
          <label class="form-check-label" for="exampleCheck1"> Futurible</label>
+           <span v-on:mouseover="showModalFutureInstructions()"><icon  name="info-circle"   scale="1.5" style="vertical-align: middle;"/>
+       </span>
       </div>
       <div class="col-12">
          <textarea maxlength="500" v-model="answers[selected].future_justification_text" type="text" id="inputcommercial_name" class="form-control " :placeholder="questions[selected][lang].futurible" required autofocus @input="onInput()" 
             style="height:100px;background-color:#e84d20; color:white; "></textarea>
+
       </div>
+
    </div>
    <!--div class="form-group">
       <div class="container">
@@ -91,19 +97,50 @@
         <span v-on:click="moveLeft()">
          <icon name="arrow-left"  scale="1.5" class="float-left"  style="height: 1em" />
        </span>
-      <b-button v-on:click="submitSurvey()" v-bind:class="{disabled: !submittable}" variant="success">Submit</b-button>
+      <b-button v-if="submittable" v-on:click="showSubmitConfirmation()"  style="background-color: white;
+    color: black;">{{'Càlcul'|translate}}</b-button>
         <span v-on:click="moveRight()">
          <icon class="float-right" scale="1.5" name="arrow-right" style="height: 1em" />
        </span>
    </div>
         <b-modal ref="myModalRef" id="myModal">
-    {{this.error}}
+    {{this.error|translate}}
      </b-modal>
              <b-modal ref="tooltip" id="tooltip">
     {{questions[selected][lang].more_information}}
   <img v-bind:src="'/static/img/'+questions[selected][lang].id+'.jpg'">
      </b-modal>
+              <b-modal ref="instructions" id="instructions" hide-footer>
+    1. Fer clic al botó 'Crear'. Això generarà un qüestionari amb nom automàtic (nom empresa+any+versió) i mostrarà la pantalla amb la primera pregunta.
+2. Cada pregunta està composada dels següents elements:
+a) Barra de progrés: mostra tants punts com preguntes a respondre. Els punts en verd representen preguntes que ja s'han respòs, mentre que els negres representen preguntes pendents.
+b) Enunciat de la pregunta: situa el tema que s'està avaluant
+c) Més informació sobre la pregunta: la icona (?) mostra informació extra sobre el tema avaluat
+d) Possibles respostes: 2,3 o 4 possibles respostes entre les que s'ha d'escollir la situació més propera a la realitat de l'empresa.
+e) Botó d'adjuntar document: 
+
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalInstructions">{{'OK'|translate}}</button>
+    
+     </b-modal  hide-footer>
+     </b-modal>
+              <b-modal ref="futureinstructions" id="futureinstructions" hide-footer>
+
+     <p>{{future_text|translate}}</p>
+     <p>{{future_text_2|translate}}</p>
+
+     <button class="btn btn-primary" variant="outline-danger" block @click="hideModalFutureInstructions">{{'OK'|translate}}</button>
+     </b-modal  hide-footer>
+     </b-modal>
+              <b-modal ref="SubmitConfirmation" id="SubmitConfirmation" hide-footer>
+
+     <p>{{confirmation_text|translate}}</p>
+     <p>{{confirmation_text_2|translate}}</p>
+
+     <button class="btn btn-primary" variant="outline-danger" block @click="hideSubmitConfirmation">{{'Enrere'|translate}}</button>
+     <button class="btn btn-primary" variant="outline-danger" block @click="submitSurvey()">{{'OK'|translate}}</button>
+     </b-modal  hide-footer>
 </div>
+
 
 </div>
 
@@ -141,7 +178,11 @@ export default {
       selected_class : 'list-group-item-primary',
       items:[1,2,3,4],
       timeoutId:1000,
-      error:''
+      error:'',
+      future_text:"Informació projectes futuribles:Marca aquesta opció si l'empresa disposa d'un projecte en curs destinat a millorar la circularitat en relació a la pregunta plantejada.",
+      future_text_2:"Si es marca aquesta opció, és obligatori descriure el projecte. La puntuació futurible del qüestionari mostrarà la millora en curs.",
+      confirmation_text:"Estàs segur d’enviar el qüestionari a avaluar?",
+      confirmation_text_2:"Això calcularà la puntuació actual i futurible de l’empresa, i no permetrà modificar ni esborrar el qüestionari"
       
     }
   },
@@ -162,6 +203,20 @@ export default {
     }
   }
 ,methods: {
+      showModalInstructions () {
+      
+      this.$refs.instructions.show()
+    },
+    hideModalInstructions () {
+      this.$refs.instructions.hide()
+    },
+      showModalFutureInstructions () {
+      
+      this.$refs.futureinstructions.show()
+    },
+    hideModalFutureInstructions () {
+      this.$refs.futureinstructions.hide()
+    },
   deleteFile(){
     this.$http.delete('upload?answer='+this.answers[this.selected].id, { headers: auth.getAuthHeader() })
     .then(request => {
@@ -176,14 +231,14 @@ export default {
   canMove(){
     if (this.answers[this.selected].score==-1 && this.answers[this.selected].id_option!=-1)
       {
-        this.error="you have to complete the answer"
+        this.error="No pots continuar sense justificar la teva resposta. Tria l'opció de justificació: mitjançant un document adjunt o una descripció explicativa."
         this.showModal()
         return false
      }
      else {
         if (this.answers[this.selected].future && this.answers[this.selected].future_justification_text.length<2)
            {
-            this.error="you have to complete the futurible answer"
+            this.error="No pots continuar sense justificar el te projecte en curs"
             this.showModal()
             return false
            } 
@@ -232,6 +287,12 @@ export default {
     hideModaltooltip () {
       this.$refs.tooltip.hide()
     },
+    showSubmitConfirmation () {
+      this.$refs.SubmitConfirmation.show()
+    },
+    hideSubmitConfirmation () {
+      this.$refs.SubmitConfirmation.hide()
+    },
 onInput(e) {
     //updateAnswer=this.updateAnswer()
       // this will be called on change of value
@@ -260,6 +321,7 @@ onInput(e) {
          )
 },
  updateAnswer() {
+  this.error=''
   var answer= this.answers[this.selected]
   if (this.scoreable()!=false)
       {

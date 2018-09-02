@@ -2,13 +2,13 @@
   <div class="container">
        
     <ul class="list-group">
-    <li class="list-group-item"><a href="#/admin/users">Gestio usuari
+    <li class="list-group-item"><a href="#/admin/users">{{"Gestió d'usuaris"|translate}}
     <icon name="user" style="height: 1em;vertical-align: middle;" scale="4"/></a></li>
-    <li class="list-group-item"><a href="#/admin/surveys">Visualitzacio de questionaris
+    <li class="list-group-item"><a href="#/admin/surveys">{{"Visualització de qüestionaris"|translate}}
 		<icon name="clipboard" style="height: 1em;vertical-align: middle;" scale="4"/></a> </li>
-    <li class="list-group-item"><a href="#/ranking">Ranquing de resultats</a>
+    <li class="list-group-item"><a href="#/ranking">{{'Rànquing de resultats'|translate}}</a>
 		<icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="4"/></li>
-    <li class="list-group-item">Extraccio d'informes
+    <li class="list-group-item">{{"Extracció d'informes"|translate}}
 		<icon name="download" style="height: 1em;vertical-align: middle;" scale="4"/></li>
     </ul>
 

@@ -1,11 +1,11 @@
 <template>
 
   <div class="login-wrapper border border-light" style="background-color: rgb(232,77,32)">
-   <link rel="icon" type="image/png" href="http://example.com/image.png" />
-  icono <link rel="icon" type="image/png" href="http://localhost:8080/static/img/01.png" />
-<img src="http://localhost:8080/static/img/01.png" alt="Smiley face" class="img-thumbnail" height="30" width="30">
+   <!--link rel="icon" type="image/png" href="http://example.com/image.png" />
+   <link rel="icon" type="image/png" href="http://localhost:8080/static/img/01.png" />
+<img src="http://localhost:8080/static/img/01.png" alt="Smiley face" class="img-thumbnail" height="30" width="30"-->
     <form class="form-signin" @submit.prevent="login">
-      <span>{{language}}</span> 
+      
       <h2 class="form-signin-heading">{{'iniciar  sessiò'|translate}}</h2>
       <label for="inputEmail" class="sr-only">Correu electronic</label>
       <input v-model="email" type="email" id="inputEmail" class="form-control" v-bind:placeholder="'Correu electronic'|translate" required autofocus>
@@ -15,7 +15,7 @@
 
       <span>{{error}}</span>
     </form>
-    <a href="#/register"><button class="btn btn-lg btn-primary btn-block" type="submit">Register</button></a>
+    <a href="#/register"><button class="btn btn-lg btn-primary btn-block" type="submit">{{'Registrar-se' |translate}}</button></a>
   </div>
 </template>
 
@@ -60,15 +60,18 @@ return auth.getLang()
         this.loginFailed(req.data.message)
         return
       }
-      this.error = false
+      this.error = ''
       localStorage.access_token = req.data.access_token
       localStorage.refresh_token = req.data.refresh_token
       auth.user.authenticated=true;
       console.log(auth.decoded())
+
+      setTimeout(() => {
       if (auth.decoded().user_claims.admin==1)
         this.$router.replace(this.$route.query.redirect || '/admin')
       else
        this.$router.replace(this.$route.query.redirect || '/user')
+   }, 1000);
     },
     loginFailed (message) {
       this.error = message

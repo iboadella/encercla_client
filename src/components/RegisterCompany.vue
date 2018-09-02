@@ -4,15 +4,15 @@
   <div class="register-wrapper border border-light">
  
     <form class="form-signin" @submit.prevent="register">
-      <h2 class="form-signin-heading">Datos Empresa</h2>
+      <h2 class="form-signin-heading">{{"Dades de l'empresa"|translate}}</h2>
   {{decoded.identity}}
   
   <div class="form-group">
                 <span id="exButton2" v-on:mouseover="showModaltooltip()" >
                <icon name="question-circle"   scale="1.5" style="vertical-align: middle;"/>
             </span>
-    <select class="custom-select" v-model='sector' >
-       <option value="" disabled selected>Sector</option>
+    <select required class="custom-select" v-model='sector' >
+       <option :value="null">{{'Sector'|translate}}</option>
   <option v-for="sectorItem in sectorCategories" v-bind:value="sectorItem"> 
     {{sectorItem|translate}}
   </option>
@@ -38,18 +38,20 @@
       <input v-model="fiscal_name" type="text" id="inputfiscal_name" class="form-control" placeholder="Fiscal Name" required autofocus>
       <label for="inputnif" class="sr-only">nif </label>
       <input v-model="nif" type="text" id="inputnif" class="form-control" placeholder="NIF" required autofocus>
+      {{'Dades de la persona de contacte'|translate}}
       <label for="inputname_surname" class="sr-only">nif </label>
+
       <input v-model="name_surname" type="text" id="inputname_surname" class="form-control" v-bind:placeholder="'Nom i cognoms'|translate" required autofocus>
       <label for="inputtelephone_number" class="sr-only">telephone_number </label>
       <input v-model="telephone_number" type="text" id="inputtelephone_number" class="form-control" v-bind:placeholder="'Telèfon'|translate" required autofocus>
       <label for="inputdescription" class="sr-only">description </label>
       <div v-if="currentRoute" class="form-check float-left">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="duplication_survey">
-        <label class="form-check-label" for="exampleCheck1">Duplicacion questionari</label>
+        <label class="form-check-label" for="exampleCheck1">{{'Permís per duplicar qüestionaris activa'|translate}}</label>
      </div>
       <input v-model="description" type="text" id="inputdescription" class="form-control" v-bind:placeholder="'Descripció activitat'|translate" required autofocus>
   <div class="form-group">
-    <select class="custom-select" v-model='comarca' >
+    <select required class="custom-select" v-model='comarca' >
       <option value="" disabled selected>Comarca</option>
   <option v-for="sectorItem in comarcas" v-bind:value="sectorItem"> 
     {{sectorItem|translate}}
@@ -57,8 +59,8 @@
 </select>
 </div>
   <div class="form-group">
-    <select class="custom-select" v-model='territori_leader' >
-      <option value="" disabled selected>Territori leader</option>
+    <select required class="custom-select" v-model='territori_leader' >
+      <option value="" disabled hidden>{{'Territori Leader'|translate}}</option>
   <option v-for="sectorItem in leaders" v-bind:value="sectorItem"> 
     {{sectorItem|translate}}
   </option>
@@ -622,7 +624,7 @@ computed: {
   }
       
       else {
-        this.status='Registrar'
+        this.status="Donar d'alta la meva empresa"
       }})
     .catch(() => "")
 },

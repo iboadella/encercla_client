@@ -1,7 +1,7 @@
 <template>
   <div>
   <div class="container bg-primary">
-    <h4>List of Users</h4>
+    <h4>{{"Gestió d'usuaris"|translate}}</h4>
     <div class="col-sm-12">
       <label class="control-label">Comarca</label>
         <select v-model="filter_comarca">
@@ -9,7 +9,7 @@
         <option v-for="item in unique_comarca" :value="item">{{item}}</option>
 
     </select> 
-    <label class="control-label">Leader</label>  
+    <label class="control-label">{{'Territori Leader'|translate}}</label>  
         <select v-model="filter_leader">
         <option value=""></option>
         <option v-for="item in unique_leader" :value="item">{{item}}</option>
@@ -31,9 +31,9 @@
   <thead>
     <tr>
       <th scope="col"></th>
-      <th scope="col">User</th>
-      <th scope="col">Company</th>
-      <th scope="col">Admin</th>
+      <th scope="col">{{'Usuari'|translate}}</th>
+      <th scope="col">{{'Empresa'|translate}}</th>
+      <th scope="col">{{'Super-usuari'|translate}}</th>
     
       
     </tr>
@@ -53,8 +53,8 @@
     {{this.error}}
      </b-modal>
               <b-modal ref="Confirmation" id="Confirmation" hide-footer>
-      Estas segur
-      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalConfirmation()">Cancel</button>
+      {{'Estàs segur d’esborrar el usuari?'|translate}}
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalConfirmation()">{{'Enrere'|translate}}</button>
       <button class="btn btn-primary" variant="outline-danger" block @click="deleteUser()">OK</button>
      </b-modal>
 </div>
