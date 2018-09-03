@@ -21,7 +21,7 @@
   <span v-for="(value,strategy) in results" class="demo">
          <li class="list-group-item" style="color:#e84d20;border-top-left-radius: 5ex !important;
           border-top-right-radius: 5ex !important;">{{strategy|translate}}</li>
-          <span v-if="value.avg<1">
+          <span>
              <li class="list-group-item" v-for="(item,index) in proposals[strategy][lang]">
       <p>
        {{item}}
@@ -41,6 +41,30 @@
            <p></p>
         
   </span>
+  <div class="container" style="background-color:white;border-radius: 5ex !important;">
+    <h4>Preguntes</h4>
+    <span v-for="(item,index) in questions">
+    
+    <p style="font-weight: bold">
+      {{index+1}} - {{item[lang].statement}}
+    </p>
+    <p>
+      {{item[lang]['q'+answers[index].id_option]}}
+    </p>
+    <span style="font-weight: bold"> {{'Document adjunt'|translate}} </span>
+    <p v-if="answers[index].justification_file!=''">Si</p>
+    <p v-else>No</p>
+    <span style="font-weight: bold">{{'Explicació'|translate}}</span>
+    <p v-if="answers[index].justification_text!=''">{{answers[index].justification_text}}</p>
+    <p v-else>No</p>
+     <span style="font-weight: bold"> {{'Projecte futurible'|translate}}</span>
+    <p v-if="answers[index].future_justification_text!=''">Si</p>
+    <p v-else>No</p>
+     <span style="font-weight: bold"> {{'Explicació projecte futurible'|translate}}</span>
+    <p v-if="answers[index].future_justification_text!=''">{{answers[index].future_justification_text}}</p>
+    <p v-else>No</p>
+  </span>
+</div>
 
     <b-button v-on:click="exportToPDF()">Export</b-button>
   </div>
@@ -163,16 +187,19 @@ computeScore(){
 },
  fetchAnswers (arrays) {
   this.$http.get('answers?ids='+arrays,  { headers: auth.getAuthHeader() })
-    .then(request => {this.answers=request.data.data , this.computeScore()
+    .then(request => {this.answers=request.data.data 
+                      var questions= this.answers.map(x=>x.id_question)
+                      this.fetchQuestions(questions)
                       
                 })
     .catch(() => "")
 },
 
- fetchQuestions (arrays, answers) {
+ fetchQuestions (arrays) {
   this.$http.get('questions?ids='+arrays, { headers: auth.getAuthHeader() })
     .then(request => {this.questions=request.data.data;
-                      this.fetchAnswers(answers) 
+                      this.computeScore()
+
                       
                 })
     .catch(() => "")
@@ -180,7 +207,7 @@ computeScore(){
  fetchCompanySurvey () {
   this.$http.get('companysurvey/'+this.$route.params.id, { headers: auth.getAuthHeader() })
     .then(request => {this.company_survey=request.data
-                      this.fetchQuestions(request.data.questions,request.data.answers)
+                      this.fetchAnswers(request.data.answers)
 
                       })
     .catch(() => "")

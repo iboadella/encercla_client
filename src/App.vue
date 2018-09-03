@@ -6,7 +6,7 @@
       <button type="button" v-if="language=='es'" v-on:click="setLang()">CAT</button>
   <ul class="navbar-nav ml-auto">
           <li v-if="inside" style="cursor: pointer" class="nav-item">
-      <a v-on:click="logout()" class="nav-link" style="color:white">{{'Logout'|translate}}</a>
+      <a v-on:click="logout()" class="nav-link" style="color:white">{{'Surt'|translate}}</a>
     </li>
         <li class="nav-item">
       <a href="#/conditions"class="nav-link" style="color:white">{{'Condicions legals'|translate}}</a>
@@ -65,7 +65,9 @@ methods:{
     return auth.getLang()
   },
   goHome(){
-          if (auth.decoded().user_claims.admin==1)
+      if (!auth.user.authenticated)
+        {this.$router.push('/')}
+        else  if (auth.decoded().user_claims.admin==1)
         this.$router.replace(this.$route.query.redirect || '/admin')
       else
        this.$router.replace(this.$route.query.redirect || '/user')

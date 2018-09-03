@@ -6,14 +6,14 @@
 <img src="http://localhost:8080/static/img/01.png" alt="Smiley face" class="img-thumbnail" height="30" width="30"-->
     <form class="form-signin" @submit.prevent="login">
       
-      <h2 class="form-signin-heading">{{'iniciar  sessiò'|translate}}</h2>
+      <h2 class="form-signin-heading">{{'Iniciar sessió'|translate}}</h2>
       <label for="inputEmail" class="sr-only">Correu electronic</label>
       <input v-model="email" type="email" id="inputEmail" class="form-control" v-bind:placeholder="'Correu electronic'|translate" required autofocus>
       <label for="inputPassword" class="sr-only">Password</label>
       <input v-model="password" type="password" id="inputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">{{'iniciar  sessiò'|translate}}</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">{{'Iniciar sessió'|translate}}</button>
 
-      <span>{{error}}</span>
+      <span>{{error|translate}}</span>
     </form>
     <a href="#/register"><button class="btn btn-lg btn-primary btn-block" type="submit">{{'Registrar-se' |translate}}</button></a>
   </div>

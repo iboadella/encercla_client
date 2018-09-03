@@ -153,7 +153,7 @@ editUser(){
   this.users.forEach(function(item,index){if (item.selected)  {selected=item.id}})
   if (selected==undefined)
   { 
-    this.error="you have to select one user"
+    this.error="has de seleccionar un usuari"
     this.showModalError()
   }
   else{
@@ -167,7 +167,7 @@ deleteUser(){
   this.users.forEach(function(item,index){if (item.selected)  {;selected=item.id}})
   if (selected==undefined)
   { 
-    this.error="you have to select one user"
+    this.error="has de seleccionar un usuari"
     this.showModalError()
   }
   else{

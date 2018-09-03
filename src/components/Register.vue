@@ -58,7 +58,9 @@ return false
  register () {
   this.error='';
   if (!this.comparePasswords)
+    { this.error=this.$i18n.translate('contrasenya no coincideix');
     return
+  }
 
   if (this.currentRoute)
   {

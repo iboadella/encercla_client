@@ -28,10 +28,10 @@
    <div class="row" style="padding-top: 1em;">
       <div class="col-12">
        {{selected+1 +'/'+answers.length}}
-        <span>{{error|translate}}</span>
+        
          <h5 class="text-left" style="color:white">
             {{questions[selected][lang].statement}}
-            <span id="exButton2" v-on:mouseover="showModaltooltip()" >
+            <span id="exButton2" v-on:click="showModaltooltip()" >
                <icon name="question-circle"   scale="1.5" style="vertical-align: middle;"/>
             </span>
             <div id="dav" class="container" style="max-width:100%">
@@ -75,7 +75,7 @@
       <div class="col-sm-2">
          <input type="checkbox" class="form-check-input" v-model="answers[selected].future">
          <label class="form-check-label" for="exampleCheck1"> Futurible</label>
-           <span v-on:mouseover="showModalFutureInstructions()"><icon  name="info-circle"   scale="1.5" style="vertical-align: middle;"/>
+           <span v-on:click="showModalFutureInstructions()"><icon  name="info-circle"   scale="1.5" style="vertical-align: middle;"/>
        </span>
       </div>
       <div class="col-12">

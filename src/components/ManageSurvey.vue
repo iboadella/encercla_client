@@ -5,7 +5,7 @@
       <label class="control-label">{{'Estat'|translate}}</label>
   <select v-model="filter_status">
   	    <option value=""></option>
-        <option v-for="item in unique_status" :value="item">{{item}}</option>
+        <option v-for="item in unique_status" :value="item">{{getStatus(item)|translate}}</option>
     </select>    
       <label class="control-label">{{'Empresa'|translate}}</label>
   <select v-model="filter_company">
@@ -15,17 +15,17 @@
       <label class="control-label">Sector</label>
       <select v-model="filter_sector">
   	    <option value=""></option>
-        <option v-for="item in unique_sector" :value="item">{{item}}</option>
+        <option v-for="item in unique_sector" :value="item">{{item|translate}}</option>
     </select>  
           <label class="control-label">SubSector</label>
       <select v-model="filter_subsector">
   	    <option value=""></option>
-        <option v-for="item in unique_subsector" :value="item">{{item}}</option>
+        <option v-for="item in unique_subsector" :value="item">{{item|translate}}</option>
     </select> 
               <label class="control-label">Comarca</label>
       <select v-model="filter_comarca">
   	    <option value=""></option>
-        <option v-for="item in unique_comarca" :value="item">{{item}}</option>
+        <option v-for="item in unique_comarca" :value="item">{{item|translate}}</option>
     </select>   
        </div>  
 <button class="btn btn-primary" type="button" @click="showModalConfirmation">
@@ -71,8 +71,9 @@
     <tr v-for="(item,index) in filtered_surveys">
     <td><input type="checkbox" v-model="item.selected" v-on:click="setOption(index)"></td>
      <td>{{item.commercial_name}}</td>
-    <td color="white"><a v-bind:href ="'#/questions/'+item.id" style="color:black">{{item.name_survey}}  </a></td>
-    
+
+    <td v-if="item.status=='created'" color="white"><a  v-bind:href ="'#/questions/'+item.id" style="color:black">{{item.name_survey}}  </a></td>
+      <td v-if="item.status!='created'" color="white"><a  v-bind:href ="'#/results/'+item.id" style="color:black">{{item.name_survey}}  </a></td>       
      <td>{{getStatus(item.status)|translate}}</td>
      <td>{{item.last_modified}}</td>
      <td  v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score)"/>

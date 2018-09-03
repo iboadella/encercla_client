@@ -14,6 +14,19 @@
 <button class="btn btn-primary" type="button" @click="duplicate()">
 <icon name="copy"  scale="1.5" style="vertical-align: middle;"/></button>
 </button>
+{{'Puntuació'|translate}}
+ <icon name="circle" scale="1.5"  style="hpadding: 2px;
+    height: 1em;
+    background-color: white;
+    padding-bottom: 2px;" color="red" />  (0-49)
+ <icon name="circle" scale="1.5"  style="hpadding: 2px;
+    height: 1em;
+    background-color: white;
+    padding-bottom: 2px;" color="orange" /> (50-69)
+ <icon name="circle" scale="1.5"  style="hpadding: 2px;
+    height: 1em;
+    background-color: white;
+    padding-bottom: 2px;" color="green" /> (70-100)
 <table class="table table-light table-bordered">
   <thead>
     <tr>
@@ -21,7 +34,7 @@
       <th scope="col">{{'Nom qüestionari'|translate}}</th>
       <th scope="col">{{'Estat'|translate}}</th>
       <th scope="col">{{'Última data de modificació'|translate}}</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació obtinguda'|translate}} obtinguda</th>
+      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació obtinguda'|translate}} </th>
       <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació futurible'|translate}}</th>
       
     </tr>
@@ -51,8 +64,11 @@
         <h3>{{'Qüestionari nou'|translate}}</h3>
 
 <div v-if="DARI_needed()==true" class="custom-file">
-      <label class="custom-file-label" for="file">Adjuntar DARI </label>
+
+            <label class="custom-file-label" for="file"></label>
+
         <input type="file" class="form-control-file" id="file" ref="file" v-on:change="setFileName()"/>
+          <div style="padding-top:10px">{{"Adjuntar DARI (Declaració Anual de Residus Industrials) de l'any corresponent a l'exercici que s'està avaluant"|translate}} </div>
 </div>
       
       {{error}}
@@ -149,18 +165,27 @@ duplicate(){
     this.company_surveys=[]
     this.fetchCompanySurvey ()
     })
-    .catch(() => "")
+    .catch(() => {
+          this.error="No es pot duplicar el qüestionari"
+    this.showModalError()
+    })
     
   }
 },
 deleteSurvey(){
   
-  var selected;
+  var selected,status;
   this.company_surveys.forEach(function(item,index){if (item.selected)  selected=item.id})
+  this.company_surveys.forEach(function(item,index){if (item.selected)  status=item.status})
   if (selected==undefined)
   { 
-    this.error="you have to select one survey"
+    this.error="has de seleccionar un usuari"
     this.showModalError()
+  }
+  else if (status=='submitted'){
+    this.error="No es pot esborrar un qüestionari enviat"
+    this.showModalError()
+
   }
   else{
       this.hideModalConfirmation()

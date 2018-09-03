@@ -12,7 +12,8 @@
                <icon name="question-circle"   scale="1.5" style="vertical-align: middle;"/>
             </span>
     <select required class="custom-select" v-model='sector' >
-       <option :value="null">{{'Sector'|translate}}</option>
+      <option value="" disabled hidden>{{'Sector'|translate}}</option>
+
   <option v-for="sectorItem in sectorCategories" v-bind:value="sectorItem"> 
     {{sectorItem|translate}}
   </option>
@@ -20,8 +21,8 @@
 </div>
 <div v-if="sector" class="form-group">
 
-          <select  class="form-control" v-model='subsector'>
-
+          <select  required class="custom-select" v-model='subsector'>
+<option value="" disabled hidden>{{'Subsector'|translate}}</option>
   <option v-for="(subsectorItem,index) in subsectorCategories" v-bind:value="subsectorItem.item"> 
     {{subsectorItem.item|translate}}  
 
@@ -609,8 +610,8 @@ computed: {
     this.fiscal_name =request.data.fiscal_name;
     this.nif = request.data.nif;
     this.duplication_survey=false ;
-    if (request.data.duplication_survey=='True' ) 
-      this.duplication_survey=true 
+    
+      this.duplication_survey=request.data.duplication_survey
     
     this.name_surname =request.data.name_surname;
     this.telephone_number = request.data.telephone_number;
