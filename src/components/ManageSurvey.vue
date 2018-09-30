@@ -17,16 +17,33 @@
   	    <option value=""></option>
         <option v-for="item in unique_sector" :value="item">{{item|translate}}</option>
     </select>  
-          <label class="control-label">SubSector</label>
+          <label class="control-label">Subsector</label>
       <select v-model="filter_subsector">
   	    <option value=""></option>
         <option v-for="item in unique_subsector" :value="item">{{item|translate}}</option>
     </select> 
+  </div>
+  <div class="col-sm-12">
               <label class="control-label">Comarca</label>
       <select v-model="filter_comarca">
   	    <option value=""></option>
         <option v-for="item in unique_comarca" :value="item">{{item|translate}}</option>
-    </select>   
+    </select> 
+    <label class="control-label">{{'Territori Leader'|translate}}</label>  
+      <select v-model="filter_leader">
+        <option value=""></option>
+        <option v-for="item in unique_leader" :value="item">{{item}}</option>
+    </select>  
+    <label class="control-label">{{'Any de convocatòria'|translate}}</label>  
+      <select v-model="filter_year">
+        <option value=""></option>
+        <option v-for="item in unique_year" :value="item">{{item}}</option>
+    </select>
+    <label class="control-label">{{'Es presenta a Leader'|translate}}</label>  
+      <select v-model="filter_convocatoria">
+        <option value=""></option>
+        <option v-for="item in unique_convocatoria" :value="item">{{item}}</option>
+    </select>      
        </div>  
 <button class="btn btn-primary" type="button" @click="showModalConfirmation">
 <icon name="remove"  scale="1.5" style="vertical-align: middle;"/></button>
@@ -58,30 +75,32 @@
   <thead>
     <tr>
       <th scope="col"></th>
-      <th scope="col">{{'Nom empresa'|translate}}</th>
-      <th scope="col">{{'Nom qüestionari'|translate}}</th>
-      <th scope="col">{{'Estat'|translate}}</th>
-      <th scope="col">{{'Última data de modificació'|translate}}</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació obtinguda'|translate}}</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació futurible'|translate}}</th>
+      <th @click="sortBy('commercial_name')" scope="col">{{'Nom empresa'|translate}}</th>
+      <th @click="sortBy('name_survey')"  scope="col">{{'Nom qüestionari'|translate}}</th>
+      <th @click="sortBy('status')"  scope="col">{{'Estat'|translate}}</th>
+      <th @click="sortBy('last_modified')"  scope="col">{{'Última data de modificació'|translate}}</th>
+       <th @click="sortBy('year')"  scope="col">{{'Any de convocatòria'|translate}}</th>
+      <th @click="sortBy('score')"  scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació obtinguda'|translate}}</th>
+      <th @click="sortBy('commercial_name')"  scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació futurible'|translate}}</th>
       
     </tr>
   </thead>
   <tbody>
     <tr v-for="(item,index) in filtered_surveys">
-    <td><input type="checkbox" v-model="item.selected" v-on:click="setOption(index)"></td>
+    <td><input type="checkbox" v-model="item.selected" v-on:click="setOption(item)"></td>
      <td>{{item.commercial_name}}</td>
 
-    <td v-if="item.status=='created'" color="white"><a  v-bind:href ="'#/questions/'+item.id" style="color:black">{{item.name_survey}}  </a></td>
-      <td v-if="item.status!='created'" color="white"><a  v-bind:href ="'#/results/'+item.id" style="color:black">{{item.name_survey}}  </a></td>       
+    <td v-if="item.status=='created'" color="white"><a  v-bind:href ="'#/questions/'+item.id_surveycompany" style="color:black">{{item.name_survey}}  </a></td>
+      <td v-if="item.status!='created'" color="white"><a  v-bind:href ="'#/results/'+item.id_surveycompany" style="color:black">{{item.name_survey}}  </a></td>       
      <td>{{getStatus(item.status)|translate}}</td>
      <td>{{item.last_modified}}</td>
+     <td>{{item.year}}</td>
      <td  v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score)"/>
        {{item.score}}</td>
                   <td v-else>       
        - </td>
-     <td  v-if="item.status=='submitted'">        <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score+item.score_future)"/>
-       {{item.score + item.score_future}}</td>
+     <td  v-if="item.status=='submitted'">        <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score_future)"/>
+       {{item.score_future}}</td>
                   <td v-else>       
        - </td>
      
@@ -136,13 +155,24 @@ export default {
       filter_sector:'',
       filter_subsector:'',
       filter_comarca:'',
+      filter_leader:'',
+      filter_year:'',
+      filter_convocatoria:'',
       companies:'',
       filter_company:'',
       filtered:[],
-      dataExcel:[]
+      dataExcel:[],
+             sort_field:'email',
+       sort_order:['asc', 'desc']
     }
   },
   computed:{
+      unique_convocatoria() {
+    return uniq(this.filtered.map(p => p.convocatoria))
+  },
+    unique_year() {
+    return uniq(this.filtered.map(p => p.year))
+  },
     unique_status () {
     return uniq(this.filtered.map(p => p.status))
   },
@@ -158,6 +188,9 @@ export default {
             unique_comarca () {
     return uniq(this.filtered.map(p => p.comarca))
   },
+            unique_leader () {
+    return uniq(this.filtered.map(p => p.territori_leader))
+  },
   filtered_surveys(){
   	var filtered=this.company_surveys
     if (this.filter_company!='')
@@ -170,11 +203,28 @@ export default {
     filtered=_.filter(filtered, {subsector:this.filter_subsector });
       if (this.filter_comarca!='')
     filtered=_.filter(filtered, {comarca:this.filter_comarca });
+      if (this.filter_leader!='')
+    filtered=_.filter(filtered, {territori_leader:this.filter_leader });  
+      if (this.filter_year!='')
+    filtered=_.filter(filtered, {year:this.filter_year });  
+      if (this.filter_convocatoria!='')
+    filtered=_.filter(filtered, {convocatoria:this.filter_convocatoria });  
+  filtered= _.orderBy(filtered, ['type',this.sort_field], this.sort_order);
+
     this.filtered=filtered;
     return filtered
   }
   }
   ,methods: {
+      sortBy(name){
+    if (name==this.sort_field)
+       {if (this.sort_order[0]=='desc')
+         { this.sort_order=['asc', 'desc']}
+       else
+         { this.sort_order=['desc', 'asc']}
+      }
+   this.sort_field=name;},
+
           getStatus (status) {
     if (status=='submitted') {
       return 'Enviat'}
@@ -190,14 +240,27 @@ export default {
     },
     getColor(score){
       console.log(score)
-      if (score>0 && score<50) return "red"
+      if (score>=0 && score<50) return "red"
       if (score>=50 && score <70) return "orange"
       else return "green"
     },
   	downloadAnswers(){
-      this.$http.get('dataExcel', {  headers: auth.getAuthHeader() })
+      var array=this.filtered.map(x=>x.id_surveycompany).join(',')
+      var lang=this.$i18n.locale()
+      this.$http.get('dataExcel?ids='+array+'&lang='+lang, {  headers: auth.getAuthHeader() })
     .then(request => {
-var ws = XLSX.utils.json_to_sheet(request.data);
+      var data = request.data
+      
+      var new_order={'id':data[1].id}
+      new_order['Preguntes']=data[1]['Preguntes']
+      var dati= data[1]
+      delete dati.id
+      delete dati.Preguntes
+      var titles=Object.keys(dati).sort()
+
+      titles.forEach(function(item) {new_order[item]=data[1][item]})
+      data[1]=new_order
+var ws = XLSX.utils.json_to_sheet(data);
 
 /* add to workbook */
 var wb = XLSX.utils.book_new();
@@ -211,21 +274,56 @@ function s2ab(s) {
   for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
   return buf;
 }
-
-saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), "sheetjs.xlsx");})
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
+var hours = today.getHours()
+var minutes = today.getMinutes()
+if(dd<10) {
+    dd = '0'+dd
+} 
+if(mm<10) {
+    mm = '0'+mm
+} 
+if(hours<10) {
+    hours = '0'+hours
+} 
+if(minutes<10) {
+    minutes = '0'+minutes
+} 
+var filename = dd + mm + yyyy+'_'+hours+minutes+".xlsx";
+saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), filename);})
 .catch(() => "")
 },
 downloadAllSurvey(){
   
-
+      var array=this.filtered.map(x=>x.id_surveycompany).join(',')
   
-      this.$http.get('surveyFiles', { responseType: 'arraybuffer', headers: auth.getAuthHeader() })
+      this.$http.get('surveyFiles?ids='+array, { responseType: 'arraybuffer', headers: auth.getAuthHeader() })
     .then(request => {
+        var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth()+1; //January is 0!
+      var yyyy = today.getFullYear();
+      var hours = today.getHours()
+      var minutes = today.getMinutes()
+      if(dd<10) {
+          dd = '0'+dd
+      } 
+      if(mm<10) {
+          mm = '0'+mm
+      } 
+      if(hours<10) {
+          hours = '0'+hours
+      } 
+      if(minutes<10) {
+          minutes = '0'+minutes
+      } 
+      var filename = dd + mm + yyyy+'_'+hours+minutes+".zip";
     console.log("download")
-     let blob = new Blob([request.data], { type: 'application/zip' },name='prova' ),
-      url = window.URL.createObjectURL(blob)
-    blob.name = "survey"
-  window.open(url);
+     saveAs(new Blob([request.data], { type: 'application/zip' }),filename)
+
  
     })
     .catch(() => "")
@@ -250,11 +348,31 @@ downloadSurvey(){
   else{
       this.$http.get('surveyFiles/'+selected, { responseType: 'arraybuffer', headers: auth.getAuthHeader() })
     .then(request => {
-    console.log("download")
-     let blob = new Blob([request.data], { type: 'application/zip' },name='prova' ),
+        var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth()+1; //January is 0!
+      var yyyy = today.getFullYear();
+      var hours = today.getHours()
+      var minutes = today.getMinutes()
+      if(dd<10) {
+          dd = '0'+dd
+      } 
+      if(mm<10) {
+          mm = '0'+mm
+      } 
+      if(hours<10) {
+          hours = '0'+hours
+      } 
+      if(minutes<10) {
+          minutes = '0'+minutes
+      } 
+      var filename = dd + mm + yyyy+'_'+hours+minutes+".zip";
+    
+    saveAs(new Blob([request.data], { type: 'application/zip'}), filename)
+   /*  let blob = new Blob([request.data], { type: 'application/zip'},name='prova' ),
       url = window.URL.createObjectURL(blob)
     blob.name = "survey"
-  window.open(url);
+  window.open(url);*/
  
     })
     .catch(() => "")
@@ -289,10 +407,10 @@ deleteSurvey(){
   }
 },
 
-setOption(index){
+setOption(survey){
+     
+this.filtered.forEach(function(item,i){ if (i.id!=survey) {item.selected=false} else {item.selected=!item.selected  }  })
 
-this.filtered.forEach(function(item,i){ if (i!=index) item.selected=false})
-this.filtered[index].selected=!this.company_surveys[index].selected 
 console.log("sel")
 },
  fetchCompanySurvey () {

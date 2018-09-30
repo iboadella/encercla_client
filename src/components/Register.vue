@@ -1,10 +1,12 @@
 
 <template>
 
-  <div class="register-wrapper border border-light">
+  <div class="register-wrapper border border-light" style="background-color: rgb(232,77,32)">
    
     <form class="form-signin" @submit.prevent="register">
-      <h2 class="form-signin-heading">{{"Donar d'alta la meva empresa" | translate}}</h2>
+        <img src="/static/img/svgs/create.svg" alt="Smiley face"  height="47" width="50">
+
+      <h2 class="form-signin-heading" style="color:white" >{{"Donar d'alta la meva empresa" | translate}}</h2>
       <label for="inputEmail" class="sr-only">Email address</label>
       <input v-model="email" type="email" id="inputEmail" class="form-control" v-bind:placeholder="'Correu electronic'|translate" required autofocus>
       <div v-if="currentRoute" class="form-check float-left">
@@ -17,10 +19,10 @@
 <input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
       <div v-if="!currentRoute" class="form-check float-left">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="accept">
-        <label class="form-check-label" for="exampleCheck1"><a href="#/conditions"> {{'Al registrar-te acceptes les nostres Condicions i la Política de privacitat'|translate}}</a></label>
+        <label class="form-check-label" for="exampleCheck1"><a href="#/conditions" style="color:white"> {{'Al registrar-te acceptes les nostres Condicions i la Política de privacitat'|translate}}</a></label>
      </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Registrar</button>
-      <span>{{error|translate}}</span>
+      <button class="btn btn-lg btn-primary btn-block" style="background-color:black" type="submit">Registrar</button>
+      <span style="color:white">{{error|translate}}</span>
     </form>
   </div>
 </template>
@@ -67,14 +69,18 @@ return false
    this.$http.post('adminregistration', { username: this.email, password: this.password ,admin:this.admin},{ headers: auth.getAuthHeader() })
     .then(request => {
                       this.error="created"
+                      if (this.admin)
+                       { this.$router.replace(this.$route.query.redirect || '/admin/users')}
+                     else {
                       this.$router.replace(this.$route.query.redirect || '/registercompany/'+request.data.user_id)
+                    }
                        })
     .catch(() => this.error = message)
    
   }
    else {
     if (!this.accept)
-      {this.error='Has de acceptar les condicions legals';
+      {this.error='És necessari acceptar les condicions legals';
        return }
   this.$http.post('registration', { username: this.email, password: this.password })
     .then(request => this.registerSuccessful(request))

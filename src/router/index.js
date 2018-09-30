@@ -14,7 +14,9 @@ import EditSurvey from '@/components/EditSurvey'
 import ManageSurvey from '@/components/ManageSurvey'
 import quisom from '@/components/quisom'
 import Ranking from '@/components/Ranking'
+import UpdateData from '@/components/UpdateData'
 import LegalConditions from '@/components/LegalConditions'
+import ResetPassword from '@/components/ResetPassword'
 import auth from '../auth/index.js'
 Vue.use(Router)
 
@@ -29,6 +31,11 @@ const router= new Router({
       path: '/conditions',
       name: 'LegalConditions',
       component: LegalConditions
+    },
+            {
+      path: '/reset',
+      name: 'ResetPassword',
+      component: ResetPassword
     },
 
         {
@@ -141,17 +148,26 @@ router.beforeEach((to, from, next) => {
     // If this is the current route and it's secure
     if (to.matched[0].path === route.path && route.secure) {
       // Verify that the user isn't logged in
-      router.app.$http.post('http://localhost:5000/auth/loggedin', 'data',{
+      if (to.query.token!=undefined)
+      {localStorage.access_token = to.query.token}
+      router.app.$http.post('auth/loggedin', 'data',{
    headers: auth.getAuthHeader()
-}).catch((response) => {
+}).then(()=>   {
+  console.log(auth.user.authenticated)
+auth.user.authenticated=true
+  console.log("dopo "+auth.user.authenticated)
+}
+)
+      .catch((response) => {
         // Kill the session
         if (response.response.status!=200)
             return next('/');
-
+        
       });
     }
   });
   // Proceed as normal
+
   next();
 });
 

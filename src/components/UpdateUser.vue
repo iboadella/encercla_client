@@ -5,16 +5,20 @@
    
     <form class="form-signin" @submit.prevent="register">
       <h2 class="form-signin-heading">{{"Modificar dades d'usuari"|translate}}</h2>
+
       <label for="inputEmail" class="sr-only">Email address</label>
-      <input v-model="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-      <div v-if="currentRoute" class="form-check float-left">
+      {{email}}
+      <!--input v-model="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus-->
+      <!--div v-if="currentRoute" class="form-check float-left">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="admin">
         <label class="form-check-label" for="exampleCheck1">{{'Super-usuari'|translate}}</label>
-     </div>
+     </div-->
       <label for="inputPassword" class="sr-only">Password</label>
-      <input v-model="password" type="password" id="inputPassword" class="form-control" placeholder="Password" >
+      <input v-model="password" type="password" id="inputPassword" class="form-control" v-bind:placeholder="'Nova contrasenya'|translate" >
 <label for="confirmInputPassword" class="sr-only">Password</label>
-<input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" placeholder="Change Password" >
+<input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" v-bind:placeholder="'Repetir nova contrasenya'|translate" >
+      <a v-if="currentRoute" href="/#/admin/users" class="btn btn-lg btn-danger btn-block"role="button">Cancelar</a>
+      <a v-else href="/#/user" class="btn btn-lg btn-danger btn-block"role="button">Cancelar</a>
       <button v-if="currentRoute"class="btn btn-lg btn-primary btn-block" type="submit">{{'Actualitzar'|translate}}</button>
       <button v-else class="btn btn-lg btn-primary btn-block" type="submit">{{'Actualitzar'|translate}}</button>
       <span>{{error}}</span>
@@ -77,9 +81,18 @@ return false
     .then(request => {
                       this.error="created"
                       if (user_id!=undefined)
-                      {this.$router.replace(this.$route.query.redirect || '/registercompany/'+user_id)}
+                      {
+                        if (this.admin){
+                          this.$router.replace(this.$route.query.redirect || '/admin/users')
+                        } else {
+
+                        this.$router.replace(this.$route.query.redirect || '/user')
+                      }
+
+
+                      }
                       else 
-                        {this.$router.replace(this.$route.query.redirect || '/registercompany')}
+                        {this.$router.replace(this.$route.query.redirect || '/user')}
                        })
     .catch(() => this.error = message)
    
@@ -98,6 +111,10 @@ return false
 
    
 
+    },
+    getToken(){
+      if (this.$route.query.token!=undefined)
+        localStorage.access_token = this.$route.query.token
     }
   },mounted(){this.fetchUser()}
 }

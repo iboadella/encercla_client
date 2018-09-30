@@ -5,10 +5,11 @@
  
     <form class="form-signin" @submit.prevent="register">
       <h2 class="form-signin-heading">{{"Dades de l'empresa"|translate}}</h2>
-  {{decoded.identity}}
+    <span v-if="user==undefined">{{decoded.identity}}</span>
+    <span v-else>{{user.email}}</span>
   
   <div class="form-group">
-                <span id="exButton2" v-on:mouseover="showModaltooltip()" >
+                <span id="exButton2" v-on:click="showModaltooltip()" >
                <icon name="question-circle"   scale="1.5" style="vertical-align: middle;"/>
             </span>
     <select required class="custom-select" v-model='sector' >
@@ -69,6 +70,8 @@
 </div>
       <label for="inputnumber_workers" class="sr-only">territori_leader </label>
       <input v-model="number_workers" type="text" id="inputnumber_workers" class="form-control " v-bind:placeholder="'Número de treballadors'|translate" required autofocus>
+      <a v-if="currentRoute" href="/#/admin/users" class="btn btn-lg btn-danger btn-block"role="button">Cancelar</a>
+      <a v-else href="/#/user" class="btn btn-lg btn-danger btn-block"role="button">Cancelar</a>
       <button class="btn btn-lg btn-primary btn-block" type="submit">{{status|translate}}</button>
       <span>{{error}}</span>
     </form>
@@ -542,6 +545,7 @@ export default {
     return {
     sectors:[],
 sector : '',
+    user:'',
     subsector : '',
     commercial_name : '',
     fiscal_name : '',
@@ -569,7 +573,7 @@ computed: {
   ,
       currentRoute(){
        //console.log(this.$route.path=='/registerAdmin')
-       return this.$route.params.id!=undefined
+       return this.$route.query.id!=undefined
     },
   sectorCategories () {
     return uniq(this.sectors.map(p => p.sector))
@@ -594,10 +598,18 @@ computed: {
     .then(request => this.leaders=request.data)
     .catch(() => "")
 },
+ fetchUser(){
+    
+    var routeurl='user/'+this.$route.query.id
+  this.$http.get(routeurl,{ headers: auth.getAuthHeader() })
+    .then(request => this.user=request.data)
+    .catch(() => "")
+},
  fetchCompany () {
   var routeurl=''
-  if (this.$route.params.id!=undefined)
-      routeurl='company?user_id='+this.$route.params.id
+  if (this.$route.query.id!=undefined)
+      {  this.fetchUser()
+        routeurl='company?user_id='+this.$route.query.id}
     else
       routeurl='company'
   this.$http.get(routeurl, { headers: auth.getAuthHeader() })
@@ -631,8 +643,8 @@ computed: {
 },
  register () {
   var routeurl=''
-  if (this.$route.params.id!=undefined)
-      routeurl='registrationcompany?user_id='+this.$route.params.id
+  if (this.$route.query.id!=undefined)
+      routeurl='registrationcompany?user_id='+this.$route.query.id
     else
       routeurl='registrationcompany'
   if (this.company_id=='') {
@@ -670,10 +682,10 @@ computed: {
     .catch(() => this.registerFailed())
 } },
     registerSuccessful (req) {
-      if (this.$route.params.id!=undefined)
-         {this.$router.replace(this.$route.query.redirect || '/updatesurvey/'+this.$route.params.id)}
+      if (this.$route.query.id!=undefined)
+         {this.$router.replace(this.$route.query.redirect || '/updatesurvey/'+this.$route.query.id)}
         else
-      {this.$router.push("user")}
+      {this.$router.push("/user")}
     },
     registerFailed (message) {
       this.error = message

@@ -8,14 +8,27 @@
       
       <h2 class="form-signin-heading">{{'Iniciar sessió'|translate}}</h2>
       <label for="inputEmail" class="sr-only">Correu electronic</label>
+      <div class="input-group">
+            <span class="input-group-addon">
+              <img src="/static/img/svgs/01.svg" alt="Smiley face"  height="50" width="50">
+            </span>
       <input v-model="email" type="email" id="inputEmail" class="form-control" v-bind:placeholder="'Correu electronic'|translate" required autofocus>
+      </div>
       <label for="inputPassword" class="sr-only">Password</label>
+      <div class="input-group">
+            <span class="input-group-addon">
+              <img src="/static/img/svgs/02.svg" alt="Smiley face"  height="47" width="50">
+            </span>
       <input v-model="password" type="password" id="inputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
+    </div>
       <button class="btn btn-lg btn-primary btn-block" type="submit">{{'Iniciar sessió'|translate}}</button>
 
       <span>{{error|translate}}</span>
+
     </form>
     <a href="#/register"><button class="btn btn-lg btn-primary btn-block" type="submit">{{'Registrar-se' |translate}}</button></a>
+   <p> {{text1|translate}}</p>
+   <p> {{text2|translate}}</p>
   </div>
 </template>
 
@@ -32,7 +45,9 @@ export default {
       password: '',
       error:'',
       lang:auth.user.lang,
-      string1:{'cat':'iniciar  sessiò','es':'iniciar session'}
+      string1:{'cat':'iniciar  sessiò','es':'iniciar session'},
+      text1:'Al registrar-te acceptes les nostres Condicions i la Política de privacitat',
+      text2:'AVÍS: Les dades introduïdes són confidencials i susceptibles de revisió per part del personal de la ADCC'
     }
   }
   ,
@@ -66,12 +81,12 @@ return auth.getLang()
       auth.user.authenticated=true;
       console.log(auth.decoded())
 
-      setTimeout(() => {
+     setTimeout(() => {
       if (auth.decoded().user_claims.admin==1)
         this.$router.replace(this.$route.query.redirect || '/admin')
       else
        this.$router.replace(this.$route.query.redirect || '/user')
-   }, 1000);
+   }, 100);
     },
     loginFailed (message) {
       this.error = message

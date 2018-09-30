@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <h4  style="color:white">{{company.commercial_name}}
-    <a href="#/updateuser"> 
+    <a href="#/registercompany/"> 
     <icon name="edit"  color="white" scale="1.5" style="vertical-align: middle;"/>
       </a>
       </h4>
@@ -51,15 +51,15 @@
            <td v-else>       
        - </td>
 
-     <td  v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score+item.score_future)"/>
-       {{item.score + item.score_future}}</td>
+     <td  v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score_future)"/>
+       {{item.score_future}}</td>
                   <td v-else>       
        - </td>
      
 </tr>
 </tbody>
 </table>
-    <b-modal ref="myModalRef" hide-footer title="">
+    <b-modal ref="myModalRef" hide-footer title="" size="lg">
       <div class="d-block text-center">
         <h3>{{'Qüestionari nou'|translate}}</h3>
 
@@ -68,7 +68,31 @@
             <label class="custom-file-label" for="file"></label>
 
         <input type="file" class="form-control-file" id="file" ref="file" v-on:change="setFileName()"/>
-          <div style="padding-top:10px">{{"Adjuntar DARI (Declaració Anual de Residus Industrials) de l'any corresponent a l'exercici que s'està avaluant"|translate}} </div>
+          <div style="padding-top:10px"><p>{{"Adjuntar DARI (Declaració Anual de Residus Industrials) de l'any corresponent a l'exercici que s'està avaluant"|translate}} </p>
+  </div>
+</div>
+  <div>
+    <div>
+       
+      <p> {{"Qüestionari per presentar sol·licitud a una convocatòria d'ajuts Leader" |translate}}</p>
+          <div class="form-check">
+      <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" name="optionsRadios" id="optionsRadios1" v-model="convocatoria">
+       {{"Qüestionari per presentar sol·licitud a una convocatòria d'ajuts Leader" |translate}}
+      </label>
+    </div>   
+      
+      <p>
+    {{'Any de convocatòria'|translate}}</label>  
+        <select v-model="convocatoria_year">
+        <option value="" disabled hidden>{{'Any'|translate}}</option>
+        <option value="2017">2017</option>
+        <option value="2018">2018</option>
+    </select>   
+      </p>
+
+
+          </div>
 </div>
       
       {{error}}
@@ -118,9 +142,12 @@ export default {
   name: 'UserPage',
   data () {
     return {
-      user: 'dpiscia',
+       decoded:auth.decoded(),
+      user: '',
       company:{id:1},
       DARI_filename:'',
+      convocatoria:true,
+      convocatoria_year:'',
       survey:'',
       company_surveys:[],
       error:'',
@@ -139,7 +166,7 @@ export default {
     },
     getColor(score){
 
-      if (score>0 && score<50) return "red"
+      if (score>=0 && score<50) return "red"
       else if (score>=50 && score <70.0) return "orange"
       else return "green"
     },
@@ -208,7 +235,14 @@ console.log("sel")
 },
  fetchCompany () {
   this.$http.get('company', { headers: auth.getAuthHeader() })
-    .then(request => this.company=request.data)
+    .then(request => {
+     if (request.data.id=='')
+     {  this.$router.replace(this.$route.query.redirect || '/registercompany/')
+}
+   else{
+      this.company=request.data
+  }
+})
     .catch(() => "")
 },
  fetchSurvey () {
@@ -231,19 +265,28 @@ DARI_needed(){
 ,
  createCompanySurvey () { 
   if( this.DARI_needed() && this.DARI_filename == ''){
-     this.error="you need to upload a DARI file"
+     this.error="Adjuntar DARI"
      return
+     }
+     if (this.convocatoria && this.convocatoria_year=='') {
+     this.error="Has de seleccionar un any "
+     return
+
      }
   this.$http.post('companysurvey',  { 
     id_survey : this.survey.id,
     file_dari: this.DARI_filename,
+    convocatoria: this.convocatoria,
+    convocatoria_year:this.convocatoria_year,
     id_company : this.company.id}
 , { headers: auth.getAuthHeader() })
     .then(request => this.registerSuccessful(request))
     .catch(request => this.registerFailed(request))
 },
     registerSuccessful (req) {
+      if (this.DARI_needed()){
       this.handleFileUpload(req.data.message.split(" ")[2])
+    }
       this.company_surveys=[]
       
       this.fetchCompanySurvey()
@@ -284,15 +327,15 @@ setFileName(){
 		this.DARI_filename=this.$refs.file.files[0].name;
 	},
 handleFileUpload(id_companysurvey){
+    var headers=auth.getAuthHeader()
+    headers['Content-Type']='multipart/form-data'
 		this.DARI_filename=this.$refs.file.files[0].name;
 		let formData = new FormData();
 		formData.append('file', this.$refs.file.files[0]);
-		this.$http.post( 'http://localhost:5000/upload?surveycompany_id='+id_companysurvey,
+		this.$http.post( 'upload?surveycompany_id='+id_companysurvey,
 		  formData,
 		  {
-		    headers: {
-			'Content-Type': 'multipart/form-data'
-		    }
+		    headers: headers
 		  }
 		).then(request=> {
 		  console.log('OK')

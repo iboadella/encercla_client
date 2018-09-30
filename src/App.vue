@@ -1,10 +1,20 @@
 <template>
   <div id="app" class="bg-primary">
-    <nav class="navbar navbar-expand-lg navbar-primary bg-primary"><a  v-on:click="goHome()" class="navbar-brand" style="cursor: pointer; color: white;">Encercla</a> <button type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"><span class="navbar-toggler-icon"></span>
+    <nav class="navbar navbar-expand-lg navbar-primary bg-primary">
+      <a  v-on:click="goHome()" class="navbar-brand" style="cursor: pointer; color: white;">
+                
+<!--img src="/static/img/pngs/96.png" alt="Smiley face" class="img-thumbnail"-->
+<img src="/static/img/svgs/96.svg" alt="Smiley face" class="img-thumbnail" height="120" width="120">
+
+      </a> <button type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"><span class="navbar-toggler-icon"></span>
     </button>
-     <button type="button" v-if="language=='cat'" v-on:click="setLang()">ES</button>
-      <button type="button" v-if="language=='es'" v-on:click="setLang()">CAT</button>
+     <button type="button" class="btn" v-if="language=='cat'" v-on:click="setLang()">ES</button>
+      <button type="button" class="btn" v-if="language=='es'" v-on:click="setLang()">CAT</button>
   <ul class="navbar-nav ml-auto">
+            <li  v-if="inside" style="cursor: pointer" class="nav-item">
+     <a href="#/updateuser" class="nav-link" style="color:white">{{auth.decoded().identity}}</a>
+  
+    </li>
           <li v-if="inside" style="cursor: pointer" class="nav-item">
       <a v-on:click="logout()" class="nav-link" style="color:white">{{'Surt'|translate}}</a>
     </li>
@@ -29,7 +39,10 @@ export default {
   name: 'App',
     data () {
     return {
-      user: 'dpiscia'
+      user: 'dpiscia',
+       decoded:auth.decoded(),
+       header:auth.getAuthHeader(),
+       auth:auth
     }
   },
   computed:{
@@ -38,26 +51,32 @@ export default {
     },
     inside:function(){
       console.log(this.$route.path=='/')
-      console.log(!(this.$route.path=='/'))
-      return !(this.$route.path=='/')
+      console.log("authenticated "+auth.user.authenticated)
+      if (auth.user.authenticated==true)
+        return true
+      else 
+        return false
+   
     }
 },
 methods:{
   setLang(){
-    console.log(auth.getLang())
+    console.log("1 lang "+auth.getLang())
     //this.$emit('changeLang')
     //this.$router.app.$emit('changeLang')
-    if (this.$i18n.locale()==null)
+    /*if (this.$i18n.locale()==null)
     this.$i18n.set('cat');
-    else {
+    else {*/
       if (this.$i18n.locale()=='cat')
-    this.$i18n.set('es');
-      else this.$i18n.set('cat');
-  }
+        {this.$i18n.set('es')}
+      else {
+        this.$i18n.set('cat')}
+    console.log("2 lang "+auth.getLang())
+  
   },
   logout(){
     localStorage.removeItem('access_token')
-    //auth.user.authenticated=false
+    auth.user.authenticated=false
     this.$router.push('/')
   },
   getLang(){

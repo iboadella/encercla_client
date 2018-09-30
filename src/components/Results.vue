@@ -7,7 +7,7 @@
       <p class="text-light"> {{'Nom qüestionari'|translate}} : {{company_survey.name_survey}}</p>
       <p class="text-light"> {{"Data d'avaluació"|translate}} : {{company_survey.pub_date}}</p>
  <p class="text-light"> {{'Puntuació obtinguda'|translate}}  {{results_avg.avg}}/100</p>
-<p class="text-light"> {{'Puntuació futurible'|translate}}  {{results_avg.avg+results_avg.avg_future}}/100</p>
+<p class="text-light"> {{'Puntuació futurible'|translate}}  {{results_avg.avg}}/100</p>
     </div>
   </div>
   <div id="chart" class="chart">
@@ -117,7 +117,14 @@ export default {
     exportToPDF :function() {
       console.log("exported")
       var element= window.document.getElementById("printable");
-      html2pdf(element);
+      var opt = {
+  margin:       0.1,
+  filename:     'myfile.pdf',
+  image:        { type: 'jpeg', quality: 0.98 },
+  html2canvas:  { scale: 1 },
+  jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+};
+      html2pdf(element,opt);
     },
 
    filtered :function(strategy) {
@@ -179,10 +186,12 @@ computeScore(){
   results_avg.avg_future= Math.round((results_avg.score_future*100/results_avg.numsector)*100)/100;
   this.results_avg=results_avg;
   this.company_survey.score=Math.round(results_avg.avg*100)/100
-  this.company_survey.score_future=Math.round(results_avg.avg_future*100)/100
+  this.company_survey.score_future=this.company_survey.score+Math.round(results_avg.avg_future*100)/100
   //if not submitted
-  if (this.company_survey.pub_date!="")
+  if (this.company_survey.pub_date==""){
+    this.company_survey.pub_date='now'
     this.updateCompanySurvey()
+  }
   this.renderChart(this.$data.data);
 },
  fetchAnswers (arrays) {

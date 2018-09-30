@@ -30,7 +30,7 @@ const translationsEs = translate
 
 Vue.i18n.add('es', translationsEs);
 
-Vue.i18n.set('cat');
+//Vue.i18n.set('cat');
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

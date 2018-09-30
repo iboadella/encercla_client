@@ -3,7 +3,7 @@
    <div class="row">
       <div class="col-12">
         <span>{{'Empresa'|translate}} {{company_survey.name_survey}}
-          <span v-on:mouseover="showModalInstructions()"><icon  name="info-circle"   scale="1.5" style="vertical-align: middle;"/>
+          <span v-on:click="showModalInstructions()"><icon  name="info-circle"   scale="1.5" style="vertical-align: middle;"/>
                 </span>
           </span>
       </div>
@@ -106,9 +106,11 @@
         <b-modal ref="myModalRef" id="myModal">
     {{this.error|translate}}
      </b-modal>
-             <b-modal ref="tooltip" id="tooltip">
-    {{questions[selected][lang].more_information}}
-  <img v-bind:src="'/static/img/'+questions[selected][lang].id+'.jpg'">
+             <b-modal ref="tooltip" id="tooltip" size="lg">
+    <div v-html="questions[selected][lang].more_information">
+  
+</div>
+<img v-bind:src="'/static/img/'+questions[selected][lang].id+lang+'.jpg'">
      </b-modal>
               <b-modal ref="instructions" id="instructions" hide-footer>
     1. Fer clic al botó 'Crear'. Això generarà un qüestionari amb nom automàtic (nom empresa+any+versió) i mostrarà la pantalla amb la primera pregunta.

@@ -31,19 +31,20 @@
   <thead>
     <tr>
       <th scope="col"></th>
-      <th scope="col">{{'Usuari'|translate}}</th>
-      <th scope="col">{{'Empresa'|translate}}</th>
+      <th @click="sortBy('email')" scope="col">{{'Usuari'|translate}}</th>
+      <th @click="sortBy('empresa')"scope="col">{{'Empresa'|translate}}</th>
       <th scope="col">{{'Super-usuari'|translate}}</th>
     
       
     </tr>
   </thead>
-  <tbody>
+  <tbody> 
     <tr v-for="(item,index) in filtered_users">
- <td><input type="checkbox" v-model="item.selected" v-on:click="setOption(index)"></td>
+ <td><input type="checkbox" v-model="item.selected" v-on:click="setOption(item)"></td>
       <td>{{item.email}}</td>
      <td>{{item.company}}</td>
      <td>{{item.type}}</td>
+     
      
 </tr>
 </tbody>
@@ -87,8 +88,10 @@ export default {
        error:'',
        filter_comarca:'',
        filter_leader:'',
-       filtered:[]
-    }
+       filtered:[],
+       sort_field:'email',
+       sort_order:['asc', 'desc']
+     }
 
   } , computed:{
 
@@ -104,25 +107,52 @@ export default {
     filtered=_.filter(filtered, {comarca:this.filter_comarca });
       if (this.filter_leader!='')
     filtered=_.filter(filtered, {leader:this.filter_leader });
-    this.filtered=filtered;
+  filtered= _.orderBy(filtered, ['type',this.sort_field], this.sort_order);
+  this.filtered=filtered;
     return filtered
+    
   }
-  },methods: {
+  },methods: 
+{
+  sortBy(name){
+    if (name==this.sort_field)
+       {if (this.sort_order[0]=='desc')
+         { this.sort_order=['asc', 'desc']}
+       else
+         { this.sort_order=['desc', 'asc']}
+      }
+   this.sort_field=name;
+  },
+
     showModalConfirmation () {
       this.$refs.Confirmation.show()
     },
     hideModalConfirmation () {
       this.$refs.Confirmation.hide()
     },
-    setOption(index){
+    setOption(user){
 
-    this.users.forEach(function(item,i){ if (i!=index) item.selected=false})
-    this.users[index].selected=!this.users[index].selected 
+    this.users.forEach(function(item,i){ if (item.id!=user.id) {item.selected=false} else {item.selected=!item.selected  }  })
+    //this.users[index].selected=!this.users[index].selected 
      console.log("sel")
 },
 exportUsers(){
+var export_users= []
+var i18n=this.$i18n
+var user_label=i18n.translate('usuari')
+this.users.forEach(function(user){ if(user.type==0){export_users.push({ 'usuari':user.email, 
+                                                        "any":user.year,
+                                                        "empresa":user.company,
+                                                        "sector":user.sector,
+                                                        "subsector":user.subsector,
+                                                        "persona":user.name_contact,
+                                                        "telefon":user.telephone_number,
+                                                        "comarca":user.comarca,
+                                                        "leader":user.leader})
+                                                  }}
+                                                  )
 
-var ws = XLSX.utils.json_to_sheet(this.users);
+var ws = XLSX.utils.json_to_sheet(export_users);
 
 /* add to workbook */
 var wb = XLSX.utils.book_new();
@@ -157,7 +187,7 @@ editUser(){
     this.showModalError()
   }
   else{
-       this.$router.replace("/updateuseradmin?id="+selected)
+       this.$router.replace("/registercompany/?id="+selected)
       
   }
 },

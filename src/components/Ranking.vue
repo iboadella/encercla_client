@@ -6,17 +6,12 @@
   	    <option value=""></option>
         <option v-for="item in unique_any" :value="item">{{item}}</option>
     </select>    
-      <label class="control-label">Company</label>
-  <select v-model="filter_company">
-  	    <option value=""></option>
-        <option v-for="item in unique_company" :value="item">{{item}}</option>
-    </select> 
       <label class="control-label">Sector</label>
       <select v-model="filter_sector">
   	    <option value=""></option>
         <option v-for="item in unique_sector" :value="item">{{item}}</option>
     </select>  
-          <label class="control-label">SubSector</label>
+          <label class="control-label">Subsector</label>
       <select v-model="filter_subsector">
   	    <option value=""></option>
         <option v-for="item in unique_subsector" :value="item">{{item}}</option>
@@ -25,14 +20,33 @@
       <select v-model="filter_comarca">
   	    <option value=""></option>
         <option v-for="item in unique_comarca" :value="item">{{item}}</option>
-    </select>   
+    </select>
+  </div>
+        <div class="col-sm-12">
+
+    <label class="control-label">{{'Territori Leader'|translate}}</label>  
+      <select v-model="filter_leader">
+        <option value=""></option>
+        <option v-for="item in unique_leader" :value="item">{{item}}</option>
+    </select>    
        </div>  
+  <div class="row">
+    <div class="col-sm-12">
+<button @click="renderBarChart()">{{'Comparar'|translate}}</button>
+<button @click="renderChart()">{{'Veure evolució'|translate}}</button>
+ </div>
+ <div class="col-sm-12">
+<button @click="setScore('score')">{{'Puntuació obtinguda'|translate}}</button>
+<button @click="setScore('score_future')">{{'Puntuació futurible'|translate}}</button>
+    </div>
+          <div class="col-sm-6">
 
 <table class="table table-light table-bordered">
   <thead>
     <tr>
       <th scope="col"></th>
       <th scope="col">Nom compania</th>
+      <th scope="col">Score</th>
       <th scope="col">Score</th>
       
     </tr>
@@ -42,17 +56,22 @@
     <td><input type="checkbox" v-model="item.selected" v-on:click="setOption(index)"></td>
      <td>{{item.commercial_name}}</td>
      <td>{{item.score}}</td>
+       <td>{{item.score_future}}</td>
+   
 
      
 </tr>
 </tbody>
 </table>
-<button @click="renderBarChart()"></button>
-<button @click="renderChart()"></button>
+</div>
+        <div class="col-sm-6">
+
+
 
 <div id="chart" class="chart">
   </div>
-
+    </div>
+  </div>
     <b-modal ref="myModalError" id="myModalError">
     {{this.error}}
      </b-modal>
@@ -93,17 +112,21 @@ export default {
       filter_subsector:'',
       filter_comarca:'',
       companies:'',
-      filter_company:'',
+      filter_leader:'',
       filtered:[],
-      dataExcel:[]
+      filtered_evolution:[],
+      filtered_evolution_avg:[],
+      dataExcel:[],
+      value:'score',
+      plot:'compare'
     }
   },
   computed:{
     unique_any () {
     return uniq(this.filtered.map(p => p.pub_date))
   },
-      unique_company () {
-    return uniq(this.filtered.map(p => p.commercial_name))
+    unique_leader () {
+    return uniq(this.filtered.map(p => p.territori_leader))
   },
         unique_sector () {
     return uniq(this.filtered.map(p => p.sector))
@@ -115,10 +138,11 @@ export default {
     return uniq(this.filtered.map(p => p.comarca))
   },
   filtered_surveys(){
+
   	var filtered=this.company_surveys
     filtered=_.filter(filtered, {status:'submitted' });
-    if (this.filter_company!='')
-  	filtered=_.filter(filtered, {commercial_name:this.filter_company });
+      if (this.filter_leader!='')
+    filtered=_.filter(filtered, {territori_leader:this.filter_leader });  
     // if (this.filter_status!='')
     //filtered=_.filter(filtered, {status:this.filter_status });
       if (this.filter_sector!='')
@@ -135,6 +159,7 @@ export default {
     this.filtered=filtered;
     return filtered
   },
+
   keepMax(){
 
     grouped=_.groupBy(this.filtered,'id_company')
@@ -143,43 +168,16 @@ export default {
   }
   }
   ,methods: {
-  	downloadAnswers(){
-      this.$http.get('dataExcel', {  headers: auth.getAuthHeader() })
-    .then(request => {
-var ws = XLSX.utils.json_to_sheet(request.data);
-
-/* add to workbook */
-var wb = XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(wb, ws, "People");
-
-/* write workbook (use type 'binary') */
-var wbout = XLSX.write(wb, {bookType:'xlsx', type:'binary'});
-function s2ab(s) {
-  var buf = new ArrayBuffer(s.length);
-  var view = new Uint8Array(buf);
-  for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-  return buf;
+setScore(value){
+this.value=value;
+if (this.plot=="compare"){
+this.renderBarChart()
+}
+else
+{
+this.renderChart()
 }
 
-saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), "sheetjs.xlsx");})
-.catch(() => "")
-},
-downloadAllSurvey(){
-  
-
-  
-      this.$http.get('surveyFiles', { responseType: 'arraybuffer', headers: auth.getAuthHeader() })
-    .then(request => {
-    console.log("download")
-     let blob = new Blob([request.data], { type: 'application/zip' },name='prova' ),
-      url = window.URL.createObjectURL(blob)
-    blob.name = "survey"
-  window.open(url);
- 
-    })
-    .catch(() => "")
-    
-  
 },
 downloadSurvey(){
   
@@ -204,8 +202,33 @@ downloadSurvey(){
     
   }
 },
+filtered_surveys_evolution(){
 
+    var filtered=this.company_surveys
+    filtered=_.filter(filtered, {status:'submitted' });
+    //substitute id_company 1 by selected
+    filtered=_.filter(filtered, {id_company:1 });
+    
+    var grouped=_.groupBy(filtered,'pub_date')
+    var maxScores=Object.keys(grouped).map(function(company){return _.maxBy(grouped[company],'score')})
+    filtered=[]
+    maxScores.map(function(item){  filtered.push(item)})
+    this.filtered_evolution=filtered;
+    return filtered
+  },
+filtered_surveys_evolution_avg(){
 
+    var filtered=this.company_surveys
+    filtered=_.filter(filtered, {status:'submitted' });
+    //substitue industrail by seelcted sector
+    filtered=_.filter(filtered, {sector:'Industrial' });
+    var grouped=_.groupBy(filtered,'pub_date')
+    var maxScores=Object.keys(grouped).map(function(company){return _.meanBy(grouped[company],'score')})
+    filtered=[]
+    maxScores.map(function(item){  filtered.push(item)})
+    this.filtered_evolution_avg=filtered;
+    return filtered
+  },
 setOption(index){
 
 this.filtered.forEach(function(item,i){ if (i!=index) item.selected=false})
@@ -254,25 +277,31 @@ console.log("sel")
       this.$refs.myModalError.hide()
     },
             renderChart: function(data) {
-
+     this.filtered_surveys_evolution()
+     this.filtered_surveys_evolution_avg()
+        this.plot='evolution'
+      var score_company=this.filtered_evolution.map(x=>x.score)
+        var date_company=this.filtered_evolution.map(x=>x.pub_date)
+        var avg_sector=this.filtered_evolution_avg.map(x=> 50)
         var results=this.filtered_surveys;
         var data = [ { label: "Data Set 1", 
-               x: [0, 1, 2, 3, 4], 
-               y: [0, 1, 2, 3, 4] }, 
+               x: date_company, 
+               y: score_company }, 
              { label: "Data Set 2", 
-               x: [0, 1, 2, 3, 4], 
-               y: [0, 1, 4, 9, 16] } ] ;
+               x: date_company, 
+               y: avg_sector } ] ;
 var xy_chart = d3_xy_chart()
-    .width(960)
+    .width(600)
     .height(500)
     .xlabel("X Axis")
     .ylabel("Y Axis") ;
+    d3.select("svg").remove()
 var svg = d3.select("#chart").append("svg")
     .datum(data)
     .call(xy_chart) ;
 
     function d3_xy_chart() {
-    var width = 640,  
+    var width = 440,  
         height = 480, 
         xlabel = "X Axis Label",
         ylabel = "Y Axis Label" ;
@@ -286,7 +315,7 @@ var svg = d3.select("#chart").append("svg")
                 innerwidth = width - margin.left - margin.right,
                 innerheight = height - margin.top - margin.bottom ;
             
-            var x_scale = d3.scale.linear()
+            var x_scale = d3.scale.ordinal()
                 .range([0, innerwidth])
                 .domain([ d3.min(datasets, function(d) { return d3.min(d.x); }), 
                           d3.max(datasets, function(d) { return d3.max(d.x); }) ]) ;
@@ -311,13 +340,14 @@ var svg = d3.select("#chart").append("svg")
                 .scale(x_scale)
                 .orient("bottom")
                 .tickSize(-innerheight)
-                .tickFormat("") ;
+                .tickFormat("");
 
             var y_grid = d3.svg.axis()
                 .scale(y_scale)
                 .orient("left") 
                 .tickSize(-innerwidth)
-                .tickFormat("") ;
+                .tickFormat("")
+;
 
             var draw_line = d3.svg.line()
                 .interpolate("basis")
@@ -342,7 +372,7 @@ var svg = d3.select("#chart").append("svg")
             svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + innerheight + ")") 
-                .call(x_axis)
+                .call(x_axis.ticks(2))
                 .append("text")
                 .attr("dy", "-.71em")
                 .attr("x", innerwidth)
@@ -411,13 +441,20 @@ var svg = d3.select("#chart").append("svg")
 
       },
       renderBarChart: function() {
-        var value='score'
+        this.plot='compare'
+        var value=this.value
 var data = this.filtered_surveys
-
+        if (value=='score_future'){
+        data = data.sort(function (a, b) {
+            return d3.ascending( a[value]+a['score'], b[value]+b['score']);
+        })
+        }
+        else {
         //sort bars based on value
         data = data.sort(function (a, b) {
-            return d3.ascending(a[value], b[value]);
+            return d3.ascending( a[value], b[value]);
         })
+      }
 
         //set up svg using margin conventions - we'll need plenty of room on the left for labels
         var margin = {
@@ -427,9 +464,10 @@ var data = this.filtered_surveys
             left: 60
         };
 
-        var width = 960 - margin.left - margin.right,
+        var width = 560 - margin.left - margin.right,
             height = 180 - margin.top - margin.bottom;
-
+        
+           d3.select("svg").remove()
         var svg = d3.select("#chart").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
