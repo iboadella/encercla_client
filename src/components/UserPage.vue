@@ -1,41 +1,57 @@
 <template>
-  <div class="hello">
+  <div class="container">
+  <div class="row">
+     <div class="col-sm-3">
+    <img src="/static/img/svgs/23.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+    <h4  style="color:white">{{'Qüestionaris'|translate}}</h4>
+  </div>
+   <div class="col-sm-2 offset-sm-2">
+    
     <h4  style="color:white">{{company.commercial_name}}
-    <a href="#/registercompany/"> 
-    <icon name="edit"  color="white" scale="1.5" style="vertical-align: middle;"/>
-      </a>
       </h4>
+    </div>
+  </div>
+<div style="color:white">
 <button class="btn btn-primary" type="button" @click="showModal">
-<icon name="plus-circle"  scale="1.5" style="vertical-align: middle;"/></button>
+<img src="/static/img/svgs/33.svg" alt="Smiley face"  height="35" width="35">
+
+<!--icon name="plus-circle"  scale="1.5" style="vertical-align: middle;"/-->
 </button>
 <button class="btn btn-primary" type="button" @click="showModalConfirmation">
-<icon name="remove"  scale="1.5" style="vertical-align: middle;"/></button>
+<img src="/static/img/svgs/34.svg" alt="Smiley face"  height="35" width="35">
 </button>
 <button class="btn btn-primary" type="button" @click="duplicate()">
-<icon name="copy"  scale="1.5" style="vertical-align: middle;"/></button>
+<img src="/static/img/svgs/60.svg" alt="Smiley face"  height="35" width="35">
 </button>
+
 {{'Puntuació'|translate}}
- <icon name="circle" scale="1.5"  style="hpadding: 2px;
-    height: 1em;
-    background-color: white;
-    padding-bottom: 2px;" color="red" />  (0-49)
- <icon name="circle" scale="1.5"  style="hpadding: 2px;
-    height: 1em;
-    background-color: white;
-    padding-bottom: 2px;" color="orange" /> (50-69)
- <icon name="circle" scale="1.5"  style="hpadding: 2px;
-    height: 1em;
-    background-color: white;
-    padding-bottom: 2px;" color="green" /> (70-100)
+ <img src="/static/img/svgs/39.svg" alt="Smiley face"  height="35" width="35">
+ 0-49
+ <img src="/static/img/svgs/41.svg" alt="Smiley face"  height="35" width="35">
+ 50-69
+ <img src="/static/img/svgs/40.svg" alt="Smiley face"  height="35" width="35">
+ 70-100
+</div>
 <table class="table table-light table-bordered">
   <thead>
     <tr>
       <th scope="col"></th>
-      <th scope="col">{{'Nom qüestionari'|translate}}</th>
-      <th scope="col">{{'Estat'|translate}}</th>
-      <th scope="col">{{'Última data de modificació'|translate}}</th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació obtinguda'|translate}} </th>
-      <th scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació futurible'|translate}}</th>
+      <th  scope="col">
+                <img src="/static/img/svgs/58.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+      {{'Nom qüestionari'|translate}}</th>
+      <th scope="col">
+        <img src="/static/img/svgs/57.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Estat'|translate}}</th>
+      <th scope="col">
+        <img src="/static/img/svgs/58.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Última data de modificació'|translate}}</th>
+       <th scope="col"> {{'Any de convocatòria'|translate}}</th>
+      <th scope="col">
+        <img src="/static/img/svgs/59.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Puntuació obtinguda'|translate}} </th>
+      <th scope="col">
+        <img src="/static/img/svgs/59.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Puntuació futurible'|translate}}</th>
       
     </tr>
   </thead>
@@ -46,13 +62,14 @@
       <td v-if="item.status!='created'" color="white"><a  v-bind:href ="'#/results/'+item.id" style="color:black">{{item.name_survey}}  </a></td>   
      <td>{{getStatus(item.status)|translate}}</td>
      <td>{{item.last_modified}}</td>
+     <td>{{item.year}}</td>
      <td v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score)"/>
-       {{item.score}}</td>
+       {{item.score}}/100</td>
            <td v-else>       
        - </td>
 
      <td  v-if="item.status=='submitted'">       <icon name="circle" style="height: 1em" v-bind:color="getColor(item.score_future)"/>
-       {{item.score_future}}</td>
+       {{item.score_future}}/100</td>
                   <td v-else>       
        - </td>
      
@@ -74,7 +91,6 @@
   <div>
     <div>
        
-      <p> {{"Qüestionari per presentar sol·licitud a una convocatòria d'ajuts Leader" |translate}}</p>
           <div class="form-check">
       <label class="form-check-label">
         <input type="checkbox" class="form-check-input" name="optionsRadios" id="optionsRadios1" v-model="convocatoria">
@@ -88,6 +104,7 @@
         <option value="" disabled hidden>{{'Any'|translate}}</option>
         <option value="2017">2017</option>
         <option value="2018">2018</option>
+        <option value="2018">2019</option>
     </select>   
       </p>
 
@@ -103,14 +120,9 @@
     <b-modal ref="myModalError" id="myModalError">
     {{this.error}}
      </b-modal>
-         <b-modal ref="instructions" id="instructions" hide-footer>
-    1. Fer clic al botó 'Crear'. Això generarà un qüestionari amb nom automàtic (nom empresa+any+versió) i mostrarà la pantalla amb la primera pregunta.
-2. Cada pregunta està composada dels següents elements:
-a) Barra de progrés: mostra tants punts com preguntes a respondre. Els punts en verd representen preguntes que ja s'han respòs, mentre que els negres representen preguntes pendents.
-b) Enunciat de la pregunta: situa el tema que s'està avaluant
-c) Més informació sobre la pregunta: la icona (?) mostra informació extra sobre el tema avaluat
-d) Possibles respostes: 2,3 o 4 possibles respostes entre les que s'ha d'escollir la situació més propera a la realitat de l'empresa.
-e) Botó d'adjuntar document: 
+         <b-modal ref="instructions" id="instructions" hide-footer size="lg">
+   <Instructions>
+   </Instructions>
       <button class="btn btn-primary" variant="outline-danger" block @click="hideModalInstructions">{{'Enrere'|translate}}</button>
       <button class="btn btn-primary" variant="outline-danger" block @click="goToSurvey()">OK</button>
      </b-modal  hide-footer>
@@ -134,8 +146,10 @@ import 'vue-awesome/icons/copy'
 import Icon from 'vue-awesome/components/Icon'
 import bModal from 'bootstrap-vue/es/components/modal/modal'
 import auth from '../auth/index.js'
+import Instructions from '@/components/Instructions'
 export default {
   components: {
+    Instructions,
     Icon,
     'b-modal': bModal
   },
@@ -151,12 +165,23 @@ export default {
       survey:'',
       company_surveys:[],
       error:'',
-      selected:''
+      selected:'' , 
+      sort_field:'email',
+       sort_order:['asc', 'desc']
     }
   } , computed:{
 
   }
 ,methods: {
+        sortBy(name){
+    if (name==this.sort_field)
+       {if (this.sort_order[0]=='desc')
+         { this.sort_order=['asc', 'desc']}
+       else
+         { this.sort_order=['desc', 'asc']}
+      }
+   this.sort_field=name;},
+
       getStatus (status) {
     if (status=='submitted') {
       return 'Enviat'}
@@ -268,6 +293,13 @@ DARI_needed(){
      this.error="Adjuntar DARI"
      return
      }
+
+     if( this.DARI_needed()  && ( this.DARI_filename.indexOf(' ') > -1)){
+     this.error="El nom del fitxer no pot incloure espai"
+     return
+     }
+
+
      if (this.convocatoria && this.convocatoria_year=='') {
      this.error="Has de seleccionar un any "
      return

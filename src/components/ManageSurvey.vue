@@ -1,87 +1,175 @@
 <template>
   <div class="hello">
-    
-      <div class="col-sm-12">
-      <label class="control-label">{{'Estat'|translate}}</label>
+    <div class="row" >
+      <div class="col-sm-2" style="opacity: 0.4">
+    <a href="#/admin/users" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/14.svg" alt="Smiley face"  height="30" width="30">
+    <figcaption>{{"Gestió d'usuaris"|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+      <div class="col-sm-2" >
+
+    <a href="#/admin/surveys" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/15.svg" alt="Smiley face"  height="30" width="30">
+    <figcaption>{{"Visualització de qüestionaris"|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+      <div class="col-sm-2" style="opacity: 0.4">
+
+    <a href="#/ranking" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/16.svg" alt="Smiley face"  height="30" width="30">
+    <figcaption>{{'Rànquing de resultats'|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+      <div class="col-sm-2" style="opacity: 0.4">
+
+    <a href="#/informes"style="color:white">
+    <figure>
+    <img src="/static/img/svgs/17.svg" alt="Smiley face"  height="30" width="30">
+    <figcaption>{{"Extracció d'informes"|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+ </div>
+
+       <div class="row" style="color:white">
+      <div class="col-sm">
+      <label style="width:120px;font-size: 0.9rem;" class="control-label">{{'Estat'|translate}}</label>
   <select v-model="filter_status">
   	    <option value=""></option>
         <option v-for="item in unique_status" :value="item">{{getStatus(item)|translate}}</option>
-    </select>    
-      <label class="control-label">{{'Empresa'|translate}}</label>
+    </select> 
+    </div>
+    <div class="col-sm">   
+      <label style="width:120px;font-size: 0.9rem;" class="control-label">{{'Empresa'|translate}}</label>
   <select v-model="filter_company">
   	    <option value=""></option>
         <option v-for="item in unique_company" :value="item">{{item}}</option>
     </select> 
-      <label class="control-label">Sector</label>
+  </div>
+  <div class="col-sm">
+      <label style="width:120px;font-size: 0.9rem;" class="control-label">Sector</label>
       <select v-model="filter_sector">
-  	    <option value=""></option>
+        <option value=""></option>
         <option v-for="item in unique_sector" :value="item">{{item|translate}}</option>
     </select>  
-          <label class="control-label">Subsector</label>
+  </div>
+
+   </div>
+
+       
+
+  <div class="row" style="color:white">
+  <div class="col-sm">
+          <label style="width:120px;font-size: 0.9rem;" class="control-label">Subsector</label>
       <select v-model="filter_subsector">
   	    <option value=""></option>
         <option v-for="item in unique_subsector" :value="item">{{item|translate}}</option>
     </select> 
   </div>
-  <div class="col-sm-12">
-              <label class="control-label">Comarca</label>
+
+
+  <div class="col-sm">
+              <label style="width:120px;font-size: 0.9rem;" class="control-label">Comarca</label>
       <select v-model="filter_comarca">
   	    <option value=""></option>
         <option v-for="item in unique_comarca" :value="item">{{item|translate}}</option>
     </select> 
-    <label class="control-label">{{'Territori Leader'|translate}}</label>  
+  </div>
+    <div class="col-sm">
+    <label style="width:120px;font-size: 0.9rem;" class="control-label">{{'Territori Leader'|translate}}</label>  
       <select v-model="filter_leader">
         <option value=""></option>
         <option v-for="item in unique_leader" :value="item">{{item}}</option>
-    </select>  
-    <label class="control-label">{{'Any de convocatòria'|translate}}</label>  
+    </select> 
+    </div> 
+  </div>
+   <div class="row" style="color:white">
+  <div class="col-sm-5">
+    <label style="width:150px;font-size: 0.9rem;"  class="control-label">{{'Any de convocatòria'|translate}}</label>  
       <select v-model="filter_year">
         <option value=""></option>
         <option v-for="item in unique_year" :value="item">{{item}}</option>
     </select>
-    <label class="control-label">{{'Es presenta a Leader'|translate}}</label>  
+  </div>
+  <div class="col-sm-5">
+    <label style="width:150px;font-size: 0.9rem;"  class="control-label">{{'Es presenta a Leader'|translate}}</label>  
       <select v-model="filter_convocatoria">
         <option value=""></option>
-        <option v-for="item in unique_convocatoria" :value="item">{{item}}</option>
+        <option v-for="item in unique_convocatoria" :value="item">{{fromEn(item)}}</option>
     </select>      
-       </div>  
+  </div>
+</div>
+ <div class="row" style="color:white">
 <button class="btn btn-primary" type="button" @click="showModalConfirmation">
-<icon name="remove"  scale="1.5" style="vertical-align: middle;"/></button>
+  <figure>
+<img src="/static/img/svgs/34.svg" alt="Smiley face"  height="35" width="35">
+<figcaption style="font-size: 0.8rem;">{{'Esborrar el qüestionari'|translate}}</figcaption>
+</figure>
 </button>
 <button class="btn btn-primary" type="button" @click="downloadSurvey">
-<icon name="download"  scale="1.5" style="vertical-align: middle;"/></button>
-</button>
-<button class="btn btn-primary" type="button" @click="downloadAllSurvey">
-<icon name="cloud-download"  scale="1.5" style="vertical-align: middle;"/></button>
-</button>
-<button class="btn btn-primary" type="button" @click="downloadAnswers">
-<icon name="file-excel-o"  scale="1.5" style="vertical-align: middle;"/></button>
+   <figure>
+<img src="/static/img/svgs/36.svg" alt="Smiley face"  height="35" width="35">
+<figcaption style="font-size: 0.8rem;">{{'Documents adjunts del qüestionari seleccionat'|translate}}</figcaption>
+</figure>
 </button>
 
+<button class="btn btn-primary" type="button" @click="downloadAllSurvey">
+   <figure>
+<img src="/static/img/svgs/36.svg" alt="Smiley face"  height="35" width="35">
+<figcaption style="font-size: 0.8rem;">{{'Documents adjunts de tots els qüestionaris'|translate}}</figcaption>
+</figure>
+</button>
+<button class="btn btn-primary" type="button" @click="downloadAnswers">
+   <figure>
+<img src="/static/img/svgs/36.svg" alt="Smiley face"  height="35" width="35">
+<figcaption style="font-size: 0.8rem;">{{'Resum de respostes de tots els qüestionaris'|translate}}</figcaption>
+</figure>
+</button>
+</div>
+ <div class="row">
+   <div class="col-sm" style="color:white">
 {{'Puntuació'|translate}}
- <icon name="circle" scale="1.5"  style="hpadding: 2px;
-    height: 1em;
-    background-color: white;
-    padding-bottom: 2px;" color="red" />  (0-49)
- <icon name="circle" scale="1.5"  style="hpadding: 2px;
-    height: 1em;
-    background-color: white;
-    padding-bottom: 2px;" color="orange" /> (50-69)
- <icon name="circle" scale="1.5"  style="hpadding: 2px;
-    height: 1em;
-    background-color: white;
-    padding-bottom: 2px;" color="green" /> (70-100)
-<table class="table table-light table-bordered">
+ <img src="/static/img/svgs/39.svg" alt="Smiley face"  height="35" width="35">
+ 0-49
+ <img src="/static/img/svgs/41.svg" alt="Smiley face"  height="35" width="35">
+ 50-69
+ <img src="/static/img/svgs/40.svg" alt="Smiley face"  height="35" width="35">
+ 70-100
+</div>
+</div>
+<table class="table table-light table-bordered" style="font-size:0.9rem">
   <thead>
     <tr>
       <th scope="col"></th>
-      <th @click="sortBy('commercial_name')" scope="col">{{'Nom empresa'|translate}}</th>
-      <th @click="sortBy('name_survey')"  scope="col">{{'Nom qüestionari'|translate}}</th>
-      <th @click="sortBy('status')"  scope="col">{{'Estat'|translate}}</th>
-      <th @click="sortBy('last_modified')"  scope="col">{{'Última data de modificació'|translate}}</th>
-       <th @click="sortBy('year')"  scope="col">{{'Any de convocatòria'|translate}}</th>
-      <th @click="sortBy('score')"  scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació obtinguda'|translate}}</th>
-      <th @click="sortBy('commercial_name')"  scope="col"><icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="1"/>{{'Puntuació futurible'|translate}}</th>
+      <th @click="sortBy('commercial_name')" scope="col">
+<img src="/static/img/svgs/10.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Nom empresa'|translate}}</th>
+      <th @click="sortBy('name_survey')"  scope="col">
+        <img src="/static/img/svgs/58.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Nom qüestionari'|translate}}</th>
+      <th @click="sortBy('status')"  scope="col">
+        <img src="/static/img/svgs/57.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Estat'|translate}} </th>
+      <th @click="sortBy('last_modified')"  scope="col">
+        <img src="/static/img/svgs/58.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+
+        {{'Última data de modificació'|translate}}</th>
+       <th @click="sortBy('year')"  scope="col">
+
+{{'Any de convocatòria'|translate}}</th>
+      <th @click="sortBy('score')"  scope="col">
+  <img src="/static/img/svgs/59.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Puntuació obtinguda'|translate}}</th>
+      <th @click="sortBy('commercial_name')"  scope="col">
+  <img src="/static/img/svgs/59.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Puntuació futurible'|translate}}</th>
       
     </tr>
   </thead>
@@ -168,28 +256,28 @@ export default {
   },
   computed:{
       unique_convocatoria() {
-    return uniq(this.filtered.map(p => p.convocatoria))
+    return uniq(this.filtered.map(p => p.convocatoria).filter(p=>p!=null))
   },
     unique_year() {
-    return uniq(this.filtered.map(p => p.year))
+    return uniq(this.filtered.map(p => p.year).filter(p=>p!='').filter(p=>p!=null))
   },
     unique_status () {
-    return uniq(this.filtered.map(p => p.status))
+    return uniq(this.filtered.map(p => p.status).filter(p=>p!=null))
   },
       unique_company () {
-    return uniq(this.filtered.map(p => p.commercial_name))
+    return uniq(this.filtered.map(p => p.commercial_name).filter(p=>p!=null))
   },
         unique_sector () {
-    return uniq(this.filtered.map(p => p.sector))
+    return uniq(this.filtered.map(p => p.sector).filter(p=>p!=null))
   },
           unique_subsector () {
-    return uniq(this.filtered.map(p => p.subsector))
+    return uniq(this.filtered.map(p => p.subsector).filter(p=>p!=null))
   },
             unique_comarca () {
-    return uniq(this.filtered.map(p => p.comarca))
+    return uniq(this.filtered.map(p => p.comarca).filter(p=>p!=null))
   },
             unique_leader () {
-    return uniq(this.filtered.map(p => p.territori_leader))
+    return uniq(this.filtered.map(p => p.territori_leader).filter(p=>p!=null))
   },
   filtered_surveys(){
   	var filtered=this.company_surveys
@@ -216,6 +304,15 @@ export default {
   }
   }
   ,methods: {
+
+    fromEn(item){
+
+      if (item==true)
+        {return "si"}
+      else if (item==false)
+        {return "no"}
+      else {return item}
+    },
       sortBy(name){
     if (name==this.sort_field)
        {if (this.sort_order[0]=='desc')
@@ -470,5 +567,23 @@ table.table-bordered > thead > tr > th{
 }
 table.table-bordered > tbody > tr > td{
     border:3px solid #e84d20;
+}
+select {
+   margin: 0px;
+  width: 200px;
+  padding: px 5px 5px 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  height: 34px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    background: white ;
+  background: url(/static/img/svgs/33.svg)   96% / 15% no-repeat #eee;
+
 }
 </style>

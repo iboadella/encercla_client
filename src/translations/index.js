@@ -1,8 +1,17 @@
 import Vue from 'vue'
 export default {
+  'El nom del fitxer no pot incloure espai':'El nombre del fichero no puede incluir espacios',
+  'Selecciona fitxer':'Selecciona fichero',
+  'Descripció explicativa ':'Descripción explicativa',
+  'Cancel·lar':"Cancelar",
+  'Mitjana puntuació obtinguda':'Promedio puntuación obtenida',
+  'Mitjana puntuació futurible':'Promedio puntuación futurible',
+  'Preguntes pitjor puntuades':'Preguntas peor puntuadas',
+  'Preguntes millor puntuades':'Preguntas mejor puntuadas',
   'Recuperar contrasenya':'Recuperar contraseña',
   'Es presenta a Leader':'Se presenta a Leader',
   'Nova contrasenya':'Nueva contraseña',
+  'Canviar contrasenya':'Cambiar contraseña',
   'Repetir nova contrasenya':'Repetir nueva contraseña',
   "Any":"Año",
   "Any de convocatòria":"Año de la convocatoria",
@@ -29,6 +38,7 @@ export default {
   "Qui som":"Quienes somos",
   "Correu electronic": "Correo electronico",
   "contrasenya":"contraseña",
+    "Contrasenya":"Contraseña",
   "Donar d'alta la meva empresa":"Dar de alta mi empresa",
   "contrasenya no coincideix":"contraseña no coincide",
   "Usuari ja existeix":"el usuario ya existe ",
@@ -119,6 +129,8 @@ export default {
 "Qui som":"Quiénes somos",
 
 "Diagnosi Economia Circular":"Evaluación Economía Circular",
+
+"Què és l'economia circular?":"¿Qué es la economía circular?",
 
 "Iniciar sessió":"Iniciar sesión",
 
@@ -339,6 +351,8 @@ export default {
 
 "Reciclatge":"Reciclaje",
 
+"Justificació":"Justificación ",
+
 "Estratègia amb alt potencial de millora":"Estrategia con alto potencial de mejora",
 
 "Estratègia amb potencial de millora mitjà":"Estrategia con potencial de mejora medio",
@@ -348,12 +362,13 @@ export default {
 "Estratègia no aplicable al sector de l'empresa":"Estrategia no aplicable al sector de la empresa",
 
 "Propostes de millora per estratègia":"Propuestas de mejora por estrategia",
-
+"Tria l'opció de justificació: mitjançant un document adjunt o una descripció explicativa.":"Selecciona la opción de justificación: mediante un documento adjunto o una descripción explicativa.",
 "No pots continuar sense justificar la teva resposta. Tria l'opció de justificació: mitjançant un document adjunt o una descripció explicativa.":"No puedes continuar sin justificar tu respuesta. Selecciona la opción de justificación: mediante un documento adjunto o una descripción explicativa.",
 "Estàs segur d’esborrar el usuari?":"¿Estás seguro de borrar el usuario?",
 "Estàs segur d’esborrar el qüestionari?":"¿Estás seguro de borrar el cuestionario?",
 "No pots continuar sense justificar el te projecte en curs":"No puedes continuar sin justificar tu proyecto en curso",
-"Informació projectes futuribles:Marca aquesta opció si l'empresa disposa d'un projecte en curs destinat a millorar la circularitat en relació a la pregunta plantejada.":"Información proyectos futuribles:Marca esta opción si la empresa dispone de un proyecto en curso destinado a mejorar la circularidad en relación a la cuestión planteada.",
+"Informació projectes futuribles:":"Información proyectos futuribles:",
+"Marca aquesta opció si l'empresa disposa d'un projecte en curs destinat a millorar la circularitat en relació a la pregunta plantejada.":"Marca esta opción si la empresa dispone de un proyecto en curso destinado a mejorar la circularidad en relación a la cuestión planteada.",
 "Si es marca aquesta opció, és obligatori descriure el projecte. La puntuació futurible del qüestionari mostrarà la millora en curs.":"Si se marca esta opción, es obligatorio describir el proyecto. La puntuación futurible del cuestionario mostrará la mejora en curso.",
 "Estàs segur d’enviar el qüestionari a avaluar?":"¿Estás seguro de enviar el cuestionario a evaluar?",
 "Això calcularà la puntuació actual i futurible de l’empresa, i no permetrà modificar ni esborrar el qüestionari":"Esto calculará la puntuación actual y futurible de la empresa, y no permitirá modificar ni borrar el cuestionario."

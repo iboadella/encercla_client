@@ -1,26 +1,29 @@
 
 <template>
 
-  <div class="register-wrapper border border-light" style="background-color: rgb(232,77,32)">
+  <div class="register-wrapper border border-light" style="background-color: rgb(232,77,32); border-style: none !important;">
    
     <form class="form-signin" @submit.prevent="register">
         <img src="/static/img/svgs/create.svg" alt="Smiley face"  height="47" width="50">
 
       <h2 class="form-signin-heading" style="color:white" >{{"Donar d'alta la meva empresa" | translate}}</h2>
       <label for="inputEmail" class="sr-only">Email address</label>
-      <input v-model="email" type="email" id="inputEmail" class="form-control" v-bind:placeholder="'Correu electronic'|translate" required autofocus>
+      <input v-model="email" type="email" id="inputEmail" class="form-control" v-bind:placeholder="'Correu electrònic'|translate" required autofocus>
       <div v-if="currentRoute" class="form-check float-left">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="admin">
         <label class="form-check-label" for="exampleCheck1">Administrator</label>
      </div>
       <label for="inputPassword" class="sr-only">Password</label>
-      <input v-model="password" type="password" id="inputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
+      <input v-model="password" type="password" id="inputPassword" class="form-control" v-bind:placeholder="'Contrasenya'|translate" required>
 <label for="confirmInputPassword" class="sr-only">Password</label>
-<input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" v-bind:placeholder="'contrasenya'|translate" required>
+<input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" v-bind:placeholder="'Contrasenya'|translate" required>
       <div v-if="!currentRoute" class="form-check float-left">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="accept">
-        <label class="form-check-label" for="exampleCheck1"><a href="#/conditions" style="color:white"> {{'Al registrar-te acceptes les nostres Condicions i la Política de privacitat'|translate}}</a></label>
+        <label class="form-check-label" for="exampleCheck1">
+          <p><a href="#/conditions" style="color:white"> {{'Al registrar-te acceptes les nostres Condicions i la Política de privacitat'|translate}}</a></p></label>
      </div>
+     
+   <p style="color:white"> {{text2|translate}}</p>
       <button class="btn btn-lg btn-primary btn-block" style="background-color:black" type="submit">Registrar</button>
       <span style="color:white">{{error|translate}}</span>
     </form>
@@ -38,8 +41,11 @@ export default {
       password: '',
       confirmPassword : '',
       error:'',
-      admin:true,
-      accept:false
+      admin:false,
+      accept:false,
+          text1:'Al registrar-te acceptes les nostres Condicions i la Política de privacitat',
+      text2:'AVÍS: Les dades introduïdes són confidencials i susceptibles de revisió per part del personal de la ADCC'
+ 
     }
   },
   computed: {
@@ -72,10 +78,14 @@ return false
                       if (this.admin)
                        { this.$router.replace(this.$route.query.redirect || '/admin/users')}
                      else {
-                      this.$router.replace(this.$route.query.redirect || '/registercompany/'+request.data.user_id)
+                      this.$router.replace(this.$route.query.redirect || '/registercompany/?id='+request.data.user_id)
                     }
                        })
-    .catch(() => this.error = message)
+    .catch(error=>
+      {console.log("error") 
+      this.error = error.response.data.message
+    }
+      )
    
   }
    else {
@@ -97,7 +107,12 @@ return false
       localStorage.access_token = req.data.access_token
       localStorage.refresh_token = req.data.refresh_token
       auth.user.authenticated=true;
-      this.$router.replace(this.$route.query.redirect || '/registercompany')    }
+            console.log(auth.decoded())
+
+      setTimeout(() => {
+      this.$router.replace(this.$route.query.redirect || '/registercompany') 
+ }, 100);
+         }
     ,
     loginFailed (message) {
       this.error = message
@@ -116,6 +131,7 @@ return false
 
 body {
   background: #605B56;
+  border:0px;
 }
 
 .register-wrapper {

@@ -14,8 +14,7 @@
 
       <span>{{error|translate}}</span>
     </form>
-   <p> {{text1|translate}}</p>
-   <p> {{text2|translate}}</p>
+
   </div>
 </template>
 

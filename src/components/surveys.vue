@@ -48,7 +48,7 @@
       
       {{error}}
       </div>
-      <button class="btn btn-primary" variant="outline-danger" block @click="hideModal">Cancel</button>
+      <button class="btn btn-primary" variant="outline-danger" block @click="hideModal">{{'Cancel·lar'|translate}}</button>
       <button class="btn btn-primary" variant="outline-danger" block @click="createCompanySurvey">Create</button>
     </b-modal>
     <b-modal ref="myModalError" id="myModalError">

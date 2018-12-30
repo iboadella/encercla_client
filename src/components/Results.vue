@@ -1,38 +1,40 @@
 <template>
-
+<div>
   <div id="printable"  class="hello">
- <div class="container">
-     <div class="col-md-4 offset-md-4" style="background-color:black;border-radius: 5ex !important;">
-      <p class="text-light"> {{'Nom empresa'|translate}}  {{company_survey.company}} </p>
-      <p class="text-light"> {{'Nom qüestionari'|translate}} : {{company_survey.name_survey}}</p>
-      <p class="text-light"> {{"Data d'avaluació"|translate}} : {{company_survey.pub_date}}</p>
- <p class="text-light"> {{'Puntuació obtinguda'|translate}}  {{results_avg.avg}}/100</p>
-<p class="text-light"> {{'Puntuació futurible'|translate}}  {{results_avg.avg}}/100</p>
+<h2 style="color:white">{{'Resultats i propostes de millora'|translate}}</h2>
+ <div class="container" style="text-align:left;">
+     <div class="col-md-4 offset-md-4" style="background-color:black;border-radius: 5ex !important">
+      <p style="padding-left:12px;" class="text-light"> {{'Nom empresa'|translate}}  {{company_survey.company}} </p>
+      <p style="padding-left:12px;"class="text-light"> {{'Nom qüestionari'|translate}} : {{company_survey.name_survey}}</p>
+      <p style="padding-left:12px;" class="text-light"> {{"Data d'avaluació"|translate}} : {{company_survey.pub_date}}</p>
+ <p style="padding-left:12px;" class="text-light"> {{'Puntuació obtinguda'|translate}}  {{results_avg.avg}}/100</p>
+<p style="padding-left:12px;" class="text-light"> {{'Puntuació futurible'|translate}}  {{results_avg.avg+results_avg.avg_future}}/100</p>
+<p style="padding-left:12px;" v-if="company_survey.convocatoria!=''"class="text-light"> {{'Any de convocatòria'|translate}}  {{company_survey.convocatoria}}</p>
     </div>
   </div>
   <div id="chart" class="chart">
   </div>
   
 
-  <p class="text-light">
+  <h4 style="padding-top:20px;padding-bottom:20px" >
 	{{'Propostes de millora per estratègia'|translate}}
-  </p>
-
-  <span v-for="(value,strategy) in results" class="demo">
-         <li class="list-group-item" style="color:#e84d20;border-top-left-radius: 5ex !important;
-          border-top-right-radius: 5ex !important;">{{strategy|translate}}</li>
+  </h4>
+    
+  <span v-for="(value,strategy) in results" class="demo" style="font-size: 0.9em;">
+         <li class="list-group-item" style="color:black;border-top-left-radius: 5ex !important;
+          border-top-right-radius: 5ex !important; padding:0; border-width:4px; text-align:center">{{strategy|translate}}</li>
           <span>
-             <li class="list-group-item" v-for="(item,index) in proposals[strategy][lang]">
-      <p>
+             <li class="list-group-item " v-for="(item,index) in proposals[strategy][lang]">
+      <p style="text-align:left">
        {{item}}
       </p>
    
     </li>
           </span>
-	  <li class="list-group-item" v-for="(item,index) in filtered(strategy)">
-		  <p>
+	  <li class="list-group-item"  v-for="(item,index) in filtered(strategy)">
+		  <p style="text-align:left" v-html="questions[item][lang].proposta_millora">
 
-		   {{questions[item][lang].proposta_millora}}
+		   
 		  </p>
    
 	  </li>
@@ -41,14 +43,14 @@
            <p></p>
         
   </span>
-  <div class="container" style="background-color:white;border-radius: 5ex !important;">
-    <h4>Preguntes</h4>
+  <div class="container" style="background-color:white;border-radius: 5ex !important; text-align:left;font-size: 0.9em;">
+    <h5 style="text-align:center">Preguntes</h5>
     <span v-for="(item,index) in questions">
     
-    <p style="font-weight: bold">
+    <p style="font-weight: bold; text-align:left">
       {{index+1}} - {{item[lang].statement}}
     </p>
-    <p>
+    <p style="text-align:left">
       {{item[lang]['q'+answers[index].id_option]}}
     </p>
     <span style="font-weight: bold"> {{'Document adjunt'|translate}} </span>
@@ -65,7 +67,7 @@
     <p v-else>No</p>
   </span>
 </div>
-
+</div>
     <b-button v-on:click="exportToPDF()">Export</b-button>
   </div>
 </template>
@@ -118,7 +120,7 @@ export default {
       console.log("exported")
       var element= window.document.getElementById("printable");
       var opt = {
-  margin:       0.1,
+  margin:       0.75,
   filename:     'myfile.pdf',
   image:        { type: 'jpeg', quality: 0.98 },
   html2canvas:  { scale: 1 },
@@ -236,6 +238,12 @@ updateCompanySurvey(){
  { headers: auth.getAuthHeader() })
     .then(request => {
          console.log("OK")
+           this.$http.get('companysurvey/'+this.$route.params.id, { headers: auth.getAuthHeader() })
+    .then(request => {this.company_survey=request.data
+                      
+
+                      })
+    .catch(() => "")
                       
                 })
     .catch(() => this.error=''
@@ -253,10 +261,10 @@ updateCompanySurvey(){
 		.sort(null)
 		.padAngle(.03);
 	 
-	var w=300,h=300;
+	var w=400,h=300;
 	 
 	var outerRadius=w/2;
-	var innerRadius=100;
+	var innerRadius=80;
 	 
 	var color = d3.scale.category10();
 	 
@@ -268,8 +276,7 @@ updateCompanySurvey(){
 		.append("svg")
 		.attr({
 		    width:w+300,
-		    height:h+300,
-		    class:'shadow'
+		    height:h+450
 		}).append('g')
 		.attr({
 		    transform:'translate('+(w+300)/2+','+(h+100)/2+')'
@@ -282,14 +289,16 @@ updateCompanySurvey(){
 		.attr({
 		    d:arc,
 		    fill:function(d,i){
-
-                        if (results[d.data.name] == undefined) return "#DC58D8"
-                        else if (results[d.data.name].avg < 0.2) return "#F5F7F1" 
-                        else if (results[d.data.name].avg >= 0.2 && results[d.data.name].avg < 0.5) return "#D8DE23" 
-                        else return "#43AE1D";
-		        //return color(d.data.name);
+                        var color;
+                        if (results[d.data.name] == undefined) color= "#999";
+                        else if (results[d.data.name].avg < 0.2) color= "#F5F7F1" ;
+                        else if (results[d.data.name].avg >= 0.2 && results[d.data.name].avg < 0.5) color= "#ffcc03" ;
+                        else color= "#66b32e";
+		        return color;
 		    }
 		});
+
+    
 	var text=svg.selectAll('text')
 	  .data(pie(data))
 	  .enter()
@@ -306,13 +315,13 @@ updateCompanySurvey(){
 	  })
 	  .style({
 	      fill:'black',
-	      'font-size':'10px'
+	      'font-size':'11px'
 	  });
 	var legendRectSize=40;
 	var legendSpacing=7;
 	var legendHeight=legendRectSize+legendSpacing;
 	 
-	var color = d3.scale.ordinal().domain([i18n.translate("Estratègia amb alt potencial de millora"), i18n.translate("Estratègia amb potencial de millora mitjà"), i18n.translate("Estratègia amb bona puntuació obtinguda"),i18n.translate("Estratègia no aplicable al sector de l'empresa")]).range(["#F5F7F1","#D8DE23","#43AE1D","#DC58D8"]);
+	var color = d3.scale.ordinal().domain([i18n.translate("Estratègia amb alt potencial de millora"), i18n.translate("Estratègia amb potencial de millora mitjà"), i18n.translate("Estratègia amb bona puntuació obtinguda"),i18n.translate("Estratègia no aplicable al sector de l'empresa")]).range(["#F5F7F1","#ffcc03","#66b32e","grey"]);
 	var legend=svg.selectAll('.legend')
 	  .data(color.domain())
 	  .enter()
@@ -321,7 +330,7 @@ updateCompanySurvey(){
 	      class:'legend',
 	      transform:function(d,i){
 		  //Just a calculation for x and y position
-		  return 'translate('+((1*legendHeight)-165)+',' + (100+(i*legendHeight)+100) + ')';
+		  return 'translate('+((1*legendHeight)-165)+',' + (250+(i*legendHeight)+100) + ')';
 	      }
 	  });
 	legend.append('rect')
@@ -344,8 +353,9 @@ updateCompanySurvey(){
 	  .text(function(d){
 	      return d;
 	  }).style({
-	      fill:'#929DAF',
-	      'font-size':'14px'
+	      fill:'black',
+	      'font-size':'14px',
+        'color':'white'
 	  });
         }
 

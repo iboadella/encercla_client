@@ -17,15 +17,22 @@ import Ranking from '@/components/Ranking'
 import UpdateData from '@/components/UpdateData'
 import LegalConditions from '@/components/LegalConditions'
 import ResetPassword from '@/components/ResetPassword'
+import Inicial from '@/components/Inicial'
+import Informes from '@/components/Informes'
 import auth from '../auth/index.js'
 Vue.use(Router)
 
 const router= new Router({
   routes: [
     {
-      path: '/',
+      path: '/login',
       name: 'Login',
       component: Login
+    },
+        {
+      path: '/',
+      name: 'Inicial',
+      component: Inicial
     },
         {
       path: '/conditions',
@@ -46,6 +53,12 @@ const router= new Router({
       path: '/registerAdmin',
       name: 'Register',
       component: Register,
+      secure: true,
+    },
+{
+      path: '/informes',
+      name: 'Informes',
+      component: Informes,
       secure: true,
     },
   {

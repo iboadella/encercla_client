@@ -1,26 +1,41 @@
 
 <template>
 
-  <div class="register-wrapper border border-light">
+  <div class="register-wrapper border border-light" style="background-color: rgb(232,77,32)">
  
     <form class="form-signin" @submit.prevent="register">
-      <h2 class="form-signin-heading">{{"Dades de l'empresa"|translate}}</h2>
+      <h2 class="form-signin-heading" style="color:white">{{"Dades de l'empresa"|translate}}</h2>
     <span v-if="user==undefined">{{decoded.identity}}</span>
     <span v-else>{{user.email}}</span>
   
-  <div class="form-group">
-                <span id="exButton2" v-on:click="showModaltooltip()" >
-               <icon name="question-circle"   scale="1.5" style="vertical-align: middle;"/>
-            </span>
-    <select required class="custom-select" v-model='sector' >
+       <div>
+       <span style="color:white">{{'Dades de la persona de contacte'|translate}}</span>
+     </div>
+        <div class="form-group" style="margin-bottom: 0.2rem;">
+
+      <input v-model="name_surname" type="text" id="inputname_surname" class="form-control" v-bind:placeholder="'Nom i cognoms'|translate" required autofocus>
+      <label for="inputtelephone_number" class="sr-only">telephone_number </label>
+    </div>
+      <div class="form-group" style="margin-bottom: 0.2rem;">
+
+      <input v-model="telephone_number" type="text" id="inputtelephone_number" class="form-control" v-bind:placeholder="'Telèfon'|translate" required autofocus>
+      <label for="inputdescription" class="sr-only">description </label>
+    </div>
+  <div class="form-group" style="margin-bottom: 0.2rem;">
+               
+    <select style="width: 90%;" required class="custom-select" v-model='sector' >
+
       <option value="" disabled hidden>{{'Sector'|translate}}</option>
 
   <option v-for="sectorItem in sectorCategories" v-bind:value="sectorItem"> 
     {{sectorItem|translate}}
   </option>
 </select>
+ <span id="exButton2" v-on:click="showModaltooltip()" >
+                <img src="/static/img/svgs/question.svg" alt="Smiley face"  height="25" width="25">
+            </span>
 </div>
-<div v-if="sector" class="form-group">
+<div v-if="sector" class="form-group" style="margin-bottom: 0.2rem;">
 
           <select  required class="custom-select" v-model='subsector'>
 <option value="" disabled hidden>{{'Subsector'|translate}}</option>
@@ -33,26 +48,38 @@
     
 </div>
 
-      
+        <div class="form-group" style="margin-bottom: 0.2rem;">
+
       <label for="inputcommercial_name" class="sr-only">{{'nom comercial'|translate}}</label>
       <input v-model="commercial_name" type="text" id="inputcommercial_name" class="form-control" v-bind:placeholder="'Nom comercial'|translate" required autofocus>
+    </div>
+      <div class="form-group" style="margin-bottom: 0.2rem;">
+
       <label for="inputfiscal_name" class="sr-only">fiscal_name </label>
       <input v-model="fiscal_name" type="text" id="inputfiscal_name" class="form-control" placeholder="Fiscal Name" required autofocus>
-      <label for="inputnif" class="sr-only">nif </label>
-      <input v-model="nif" type="text" id="inputnif" class="form-control" placeholder="NIF" required autofocus>
-      {{'Dades de la persona de contacte'|translate}}
-      <label for="inputname_surname" class="sr-only">nif </label>
+    </div>
+      <div class="form-group" style="margin-bottom: 0.2rem;">
 
-      <input v-model="name_surname" type="text" id="inputname_surname" class="form-control" v-bind:placeholder="'Nom i cognoms'|translate" required autofocus>
-      <label for="inputtelephone_number" class="sr-only">telephone_number </label>
-      <input v-model="telephone_number" type="text" id="inputtelephone_number" class="form-control" v-bind:placeholder="'Telèfon'|translate" required autofocus>
-      <label for="inputdescription" class="sr-only">description </label>
+      <label for="inputnif" class="sr-only">nif </label>
+      <input v-model="nif" type="text" id="inputnif" class="form-control" placeholder="NIF" 
+      required autofocus >
+    </div>
+      <div class="form-group" style="margin-bottom: 0.2rem;">
+
+      
+      <label for="inputname_surname" class="sr-only">nif </label>
+      </div>
+
+
       <div v-if="currentRoute" class="form-check float-left">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="duplication_survey">
         <label class="form-check-label" for="exampleCheck1">{{'Permís per duplicar qüestionaris activa'|translate}}</label>
      </div>
+       <div class="form-group" style="margin-bottom: 0.2rem;">
+
       <input v-model="description" type="text" id="inputdescription" class="form-control" v-bind:placeholder="'Descripció activitat'|translate" required autofocus>
-  <div class="form-group">
+    </div>
+  <div class="form-group" style="margin-bottom: 0.2rem;">
     <select required class="custom-select" v-model='comarca' >
       <option value="" disabled selected>Comarca</option>
   <option v-for="sectorItem in comarcas" v-bind:value="sectorItem"> 
@@ -60,7 +87,7 @@
   </option>
 </select>
 </div>
-  <div class="form-group">
+  <div class="form-group" style="margin-bottom: 0.2rem;">
     <select required class="custom-select" v-model='territori_leader' >
       <option value="" disabled hidden>{{'Territori Leader'|translate}}</option>
   <option v-for="sectorItem in leaders" v-bind:value="sectorItem"> 
@@ -68,14 +95,21 @@
   </option>
 </select>
 </div>
+  <div class="form-group" >
+
       <label for="inputnumber_workers" class="sr-only">territori_leader </label>
       <input v-model="number_workers" type="text" id="inputnumber_workers" class="form-control " v-bind:placeholder="'Número de treballadors'|translate" required autofocus>
-      <a v-if="currentRoute" href="/#/admin/users" class="btn btn-lg btn-danger btn-block"role="button">Cancelar</a>
-      <a v-else href="/#/user" class="btn btn-lg btn-danger btn-block"role="button">Cancelar</a>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">{{status|translate}}</button>
+</div>
+      <a v-if="currentRoute" href="/#/admin/users" class="btn btn-lg btn-danger btn-block"role="button" style="background-color:black">{{'Cancel·lar'|translate}}</a>
+      <a v-else href="#/conditions" style="color:white"> {{'Al registrar-te acceptes les nostres Condicions i la Política de privacitat'|translate}}</a>
+      <p v-if="!currentRoute" style="color:white"> {{'AVÍS: Les dades introduïdes són confidencials i susceptibles de revisió per part del personal de la ADCC'|translate}}</p>
+      <!--a v-else href="/#/user" class="btn btn-lg btn-danger btn-block"role="button" style="background-color:black" >Cancelar</a-->
+      <button class="btn btn-primary" type="submit">{{status|translate}}
+        <img src="/static/img/svgs/13.svg" alt="Smiley face"  height="90" width="90">
+      </button>
       <span>{{error}}</span>
     </form>
-                 <b-modal ref="tooltip" id="tooltip">
+                 <b-modal class="my-modal" ref="tooltip" id="tooltip" size="lg">
   <div v-if="lang=='cat'">
   <table class="table">
 <tbody>
@@ -662,7 +696,7 @@ computed: {
     territori_leader : this.territori_leader ,
     number_workers : this.number_workers}, { headers: auth.getAuthHeader() })
     .then(request => this.registerSuccessful(request))
-    .catch(() => this.registerFailed()) }
+    .catch((request) => this.registerFailed(request)) }
 
     else  {
       this.$http.put('registrationcompany/'+this.company_id, { 
@@ -679,7 +713,7 @@ computed: {
     territori_leader : this.territori_leader ,
     number_workers : this.number_workers}, { headers: auth.getAuthHeader() })
     .then(request => this.registerSuccessful(request))
-    .catch(() => this.registerFailed())
+    .catch((request) => this.registerFailed(request))
 } },
     registerSuccessful (req) {
       if (this.$route.query.id!=undefined)
@@ -687,8 +721,8 @@ computed: {
         else
       {this.$router.push("/user")}
     },
-    registerFailed (message) {
-      this.error = message
+    registerFailed (req) {
+      this.error = req.response.data.message
     },
             showModaltooltip () {
       this.$refs.tooltip.show()
@@ -745,5 +779,12 @@ body {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+.modal-dialog .modal-lg {
+    max-width: 90% !important;
+}
+div.modal.my-modal .modal-dialog {
+    max-width: 90% !important;
 }
 </style>

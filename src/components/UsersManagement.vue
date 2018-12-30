@@ -1,39 +1,91 @@
 <template>
   <div>
+    <div class="row" >
+      <div class="col-sm-2">
+    <a href="#/admin/users" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/14.svg" alt="Smiley face"  height="30" width="30">
+    <figcaption>{{"Gestió d'usuaris"|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+      <div class="col-sm-2" style="opacity: 0.4">
+
+    <a href="#/admin/surveys" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/15.svg" alt="Smiley face"  height="30" width="30">
+    <figcaption>{{"Visualització de qüestionaris"|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+      <div class="col-sm-2" style="opacity: 0.4">
+
+    <a href="#/ranking" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/16.svg" alt="Smiley face"  height="30" width="30">
+    <figcaption>{{'Rànquing de resultats'|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+      <div class="col-sm-2" style="opacity: 0.4">
+
+    <a href="#/informes" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/17.svg" alt="Smiley face"  height="30" width="30">
+    <figcaption>{{"Extracció d'informes"|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+ </div>
+
+
+
   <div class="container bg-primary">
-    <h4>{{"Gestió d'usuaris"|translate}}</h4>
+    
     <div class="col-sm-12">
-      <label class="control-label">Comarca</label>
+      <label class="control-label" style="color:white">Comarca</label>
+        <!--img src="/static/img/svgs/37.svg" alt="Smiley face"  height="33" width="33"-->
         <select v-model="filter_comarca">
         <option value=""></option>
         <option v-for="item in unique_comarca" :value="item">{{item}}</option>
 
     </select> 
-    <label class="control-label">{{'Territori Leader'|translate}}</label>  
+    <label class="control-label" style="color:white">{{'Territori Leader'|translate}}</label>  
         <select v-model="filter_leader">
         <option value=""></option>
         <option v-for="item in unique_leader" :value="item">{{item}}</option>
     </select>   
   </div>
     <a href="/#/registerAdmin"><button class="btn btn-primary" type="button"  >
-<icon name="plus-circle"  scale="1.5" style="vertical-align: middle;"/></button>
+<img src="/static/img/svgs/33.svg" alt="Smiley face"  height="35" width="35">
+</button>
 </button></a>
 <button class="btn btn-primary" type="button"  @click="showModalConfirmation()">
-<icon name="remove"  scale="1.5" style="vertical-align: middle;"/></button>
+<img src="/static/img/svgs/34.svg" alt="Smiley face"  height="35" width="35">
+</button>
 </button>
 <button class="btn btn-primary" type="button" @click="editUser()">
-<icon name="edit"  scale="1.5" style="vertical-align: middle;"/></button>
+<img src="/static/img/svgs/35.svg" alt="Smiley face"  height="35" width="35">
+</button>
 </button>
 <button class="btn btn-primary" type="button" @click="exportUsers()">
-<icon name="download"  scale="1.5" style="vertical-align: middle;"/></button>
+<img src="/static/img/svgs/36.svg" alt="Smiley face"  height="35" width="35">
+</button>
 </button>
     <table class="table table-light table-bordered">
   <thead>
     <tr>
       <th scope="col"></th>
-      <th @click="sortBy('email')" scope="col">{{'Usuari'|translate}}</th>
-      <th @click="sortBy('empresa')"scope="col">{{'Empresa'|translate}}</th>
-      <th scope="col">{{'Super-usuari'|translate}}</th>
+      <th @click="sortBy('email')" scope="col"><img src="/static/img/svgs/06.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+      <span>
+        {{'Usuari'|translate}}
+      </span>
+      </th>
+      <th @click="sortBy('empresa')"scope="col">
+        <img src="/static/img/svgs/10.svg" alt="Smiley face"  height="33" width="33" style="float:left">
+        {{'Empresa'|translate}}</th>
+      <th scope="col">
+        <img src="/static/img/svgs/06.svg" alt="Smiley face"  height="33" width="33" style="float:left">{{'Super-usuari'|translate}}</th>
     
       
     </tr>
@@ -96,10 +148,10 @@ export default {
   } , computed:{
 
             unique_comarca () {
-    return uniq(this.filtered.map(p => p.comarca))
+    return uniq(this.filtered.map(p => p.comarca).filter(p=>p!=null))
   },
             unique_leader () {
-    return uniq(this.filtered.map(p => p.leader))
+    return uniq(this.filtered.map(p => p.leader).filter(p=>p!=null))
   },
   filtered_users(){
     var filtered=this.users
@@ -224,5 +276,34 @@ deleteUser(){
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+table.table-bordered{
+    border:3px solid #e84d20;
+    margin-top:20px;
+  }
+table.table-bordered > thead > tr > th{
+    border:3px solid #e84d20;
+}
+table.table-bordered > tbody > tr > td{
+    border:3px solid #e84d20;
+}
+select {
+   margin: 5px;
+  width: 200px;
+  padding: 5px 35px 5px 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  height: 34px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    background: white ;
+  background: url(/static/img/svgs/33.svg)   96% / 15% no-repeat #eee;
+
+}
+
 
 </style>

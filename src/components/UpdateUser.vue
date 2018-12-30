@@ -5,7 +5,6 @@
    
     <form class="form-signin" @submit.prevent="register">
       <h2 class="form-signin-heading">{{"Modificar dades d'usuari"|translate}}</h2>
-
       <label for="inputEmail" class="sr-only">Email address</label>
       {{email}}
       <!--input v-model="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus-->
@@ -17,8 +16,8 @@
       <input v-model="password" type="password" id="inputPassword" class="form-control" v-bind:placeholder="'Nova contrasenya'|translate" >
 <label for="confirmInputPassword" class="sr-only">Password</label>
 <input v-model="confirmPassword" type="password" id="confirmInputPassword" class="form-control" v-bind:placeholder="'Repetir nova contrasenya'|translate" >
-      <a v-if="currentRoute" href="/#/admin/users" class="btn btn-lg btn-danger btn-block"role="button">Cancelar</a>
-      <a v-else href="/#/user" class="btn btn-lg btn-danger btn-block"role="button">Cancelar</a>
+      <a v-if="decoded.decoded().user_claims.admin==1" href="/#/admin/users" class="btn btn-lg btn-danger btn-block"role="button">{{'Cancel·lar'|translate}}</a>
+      <a v-else href="/#/user" class="btn btn-lg btn-danger btn-block"role="button">{{'Cancel·lar'|translate}}</a>
       <button v-if="currentRoute"class="btn btn-lg btn-primary btn-block" type="submit">{{'Actualitzar'|translate}}</button>
       <button v-else class="btn btn-lg btn-primary btn-block" type="submit">{{'Actualitzar'|translate}}</button>
       <span>{{error}}</span>
@@ -33,6 +32,7 @@ export default {
   name: 'Register',
   data () {
     return {
+             decoded:auth,
       email: '',
       password: '',
       confirmPassword : '',

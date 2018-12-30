@@ -2,8 +2,9 @@
 <div class="container bg-primary">
    <div class="row">
       <div class="col-12">
-        <span>{{'Empresa'|translate}} {{company_survey.name_survey}}
-          <span v-on:click="showModalInstructions()"><icon  name="info-circle"   scale="1.5" style="vertical-align: middle;"/>
+        <span style="color:white">{{'Empresa'|translate}} {{company_survey.name_survey}}
+          <span v-on:click="showModalInstructions()">
+           <img src="/static/img/svgs/55.svg" alt="Smiley face"  height="30" width="30">
                 </span>
           </span>
       </div>
@@ -20,6 +21,7 @@
                <icon v-if="index!=selected&& answers[index].score==-1"name="circle-o" style="height: 1em" color="black"/>
             </span>
          </li>
+          <span style="color:white">{{selected+1 +'/'+answers.length}}</span>
         <span v-on:click="moveRight()">
          <icon class="float-right" scale="1.5" name="arrow-right" style="height: 1em" />
        </span>
@@ -27,12 +29,12 @@
     </div>
    <div class="row" style="padding-top: 1em;">
       <div class="col-12">
-       {{selected+1 +'/'+answers.length}}
         
          <h5 class="text-left" style="color:white">
             {{questions[selected][lang].statement}}
             <span id="exButton2" v-on:click="showModaltooltip()" >
-               <icon name="question-circle"   scale="1.5" style="vertical-align: middle;"/>
+                          <img src="/static/img/svgs/question.svg" alt="Smiley face"  height="30" width="30">
+
             </span>
             <div id="dav" class="container" style="max-width:100%">
                <!--b-tooltip  boundary="window" target="exButton2" placement="bottom">
@@ -53,9 +55,25 @@
          </ul>
       </div>
    </div>
+
+   <div class="row">
+     <div class="col-sm-12">
+   <h4 class="float-left" style="color:white; padding-top:10px">
+
+   
+{{'Justificació'|translate}}   </h4>
+   </div>
+    <div  class="col-sm-12">
+      <h6 class="float-left" style="color:white; padding-top:10px">
+        {{"Tria l'opció de justificació: mitjançant un document adjunt o una descripció explicativa."|translate}}
+      </h6>
+    </div>
+</div>
    <div class="row" style="padding-top:1em">
       <div v-if="answers[selected].justification_file==''"class="col-sm-3">
-         <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+          
+         
+         <input style="color:white" type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
          </label>
       </div>
       <div v-else class="col-sm-3">
@@ -67,19 +85,19 @@
    </div>
    <div class="row" style="padding-top:1em">
       <div class="col-12">
-         <textarea maxlength="500" v-model="answers[selected].justification_text" type="text" id="inputcommercial_name" class="form-control" required autofocus @input="onInput()" 
+         <textarea maxlength="500" v-model="answers[selected].justification_text" type="text" id="inputcommercial_name" class="form-control" :placeholder="'Descripció explicativa '|translate" required autofocus @input="onInput()" 
             style="height:100px;background-color:#e84d20; color:white; "></textarea>
       </div>
    </div>
    <div class="row" style="padding-top:2em">
-      <div class="col-sm-2">
+      <div class="col-10" style="color:white">
          <input type="checkbox" class="form-check-input" v-model="answers[selected].future">
-         <label class="form-check-label" for="exampleCheck1"> Futurible</label>
+         <label class="form-check-label" for="exampleCheck1"> {{questions[selected][lang].futurible}}</label>
            <span v-on:click="showModalFutureInstructions()"><icon  name="info-circle"   scale="1.5" style="vertical-align: middle;"/>
        </span>
       </div>
       <div class="col-12">
-         <textarea maxlength="500" v-model="answers[selected].future_justification_text" type="text" id="inputcommercial_name" class="form-control " :placeholder="questions[selected][lang].futurible" required autofocus @input="onInput()" 
+         <textarea maxlength="500" v-model="answers[selected].future_justification_text" type="text" id="inputcommercial_name" class="form-control " :placeholder="'Explica breument el teu projecte'|translate" required autofocus @input="onInput()" 
             style="height:100px;background-color:#e84d20; color:white; "></textarea>
 
       </div>
@@ -110,16 +128,12 @@
     <div v-html="questions[selected][lang].more_information">
   
 </div>
-<img v-bind:src="'/static/img/'+questions[selected][lang].id+lang+'.jpg'">
+<img v-if="[1,2,3,4,12].includes(questions[selected][lang].id)"v-bind:src="'/static/img/'+questions[selected][lang].id+lang+'.jpg'">
      </b-modal>
-              <b-modal ref="instructions" id="instructions" hide-footer>
-    1. Fer clic al botó 'Crear'. Això generarà un qüestionari amb nom automàtic (nom empresa+any+versió) i mostrarà la pantalla amb la primera pregunta.
-2. Cada pregunta està composada dels següents elements:
-a) Barra de progrés: mostra tants punts com preguntes a respondre. Els punts en verd representen preguntes que ja s'han respòs, mentre que els negres representen preguntes pendents.
-b) Enunciat de la pregunta: situa el tema que s'està avaluant
-c) Més informació sobre la pregunta: la icona (?) mostra informació extra sobre el tema avaluat
-d) Possibles respostes: 2,3 o 4 possibles respostes entre les que s'ha d'escollir la situació més propera a la realitat de l'empresa.
-e) Botó d'adjuntar document: 
+              <b-modal ref="instructions" id="instructions" hide-footer size="lg">
+              
+    <Instructions>
+    </Instructions>
 
       <button class="btn btn-primary" variant="outline-danger" block @click="hideModalInstructions">{{'OK'|translate}}</button>
     
@@ -128,6 +142,7 @@ e) Botó d'adjuntar document:
               <b-modal ref="futureinstructions" id="futureinstructions" hide-footer>
 
      <p>{{future_text|translate}}</p>
+     <p>{{future_text_1|translate}}</p>
      <p>{{future_text_2|translate}}</p>
 
      <button class="btn btn-primary" variant="outline-danger" block @click="hideModalFutureInstructions">{{'OK'|translate}}</button>
@@ -162,8 +177,10 @@ import bFormRadio from 'bootstrap-vue/es/components/form-radio/form-radio';
 import bTooltip from 'bootstrap-vue/es/components/tooltip/tooltip';
 import Icon from 'vue-awesome/components/Icon'
 import auth from '../auth/index.js'
+import Instructions from '@/components/Instructions'
 export default {
   components: {
+    Instructions,
     Icon,
    'b-button': bButton,
    'b-tooltip': bTooltip,
@@ -181,7 +198,8 @@ export default {
       items:[1,2,3,4],
       timeoutId:1000,
       error:'',
-      future_text:"Informació projectes futuribles:Marca aquesta opció si l'empresa disposa d'un projecte en curs destinat a millorar la circularitat en relació a la pregunta plantejada.",
+      future_text:"Informació projectes futuribles:",
+      future_text_1:"Marca aquesta opció si l'empresa disposa d'un projecte en curs destinat a millorar la circularitat en relació a la pregunta plantejada.",
       future_text_2:"Si es marca aquesta opció, és obligatori descriure el projecte. La puntuació futurible del qüestionari mostrarà la millora en curs.",
       confirmation_text:"Estàs segur d’enviar el qüestionari a avaluar?",
       confirmation_text_2:"Això calcularà la puntuació actual i futurible de l’empresa, i no permetrà modificar ni esborrar el qüestionari"
@@ -398,13 +416,26 @@ setOption(value){
 },
 handleFileUpload(){
 
-      /*if (this.$refs.file.files[0].size>20000000)
+      if (this.$refs.file.files[0].size>5000000)
     {
-      this.error="file size too big.MAX is 20MB"
+      this.error="Max 5MB"
+      this.showModal()
+      document.getElementById("file").value = "";
       return
-    }*/
+    }
+    else 
+      if (this.$refs.file.files[0].name.indexOf(' ') > -1)
+      {
+              this.error="El nom del fitxer no pot incloure espai"
+      this.showModal()
+      document.getElementById("file").value = "";
+      return
+
+    }
+    else {
     var headers=auth.getAuthHeader()
     headers['Content-Type']='multipart/form-data'
+    
     this.answers[this.selected].justification_file=this.$refs.file.files[0].name;
     let formData = new FormData();
     formData.append('file', this.$refs.file.files[0]);
@@ -422,6 +453,7 @@ handleFileUpload(){
     .catch(function(){
       console.log('FAILURE!!');
     });
+  }
 	}
 },mounted(){this.fetchCompanySurvey()}
 }
@@ -454,5 +486,9 @@ li {
 }
 .tooltip-inner{
 max-width:900px !important
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: white;
+    opacity: 1; /* Firefox */
 }
 </style>

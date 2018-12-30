@@ -21,7 +21,7 @@ checkAuth() {
     }
   },
   decoded(){
-
+    console.log("identity")
     return jwtDecode(localStorage.getItem('access_token'))
   },
   setLang(){

@@ -1,16 +1,42 @@
 <template>
-  <div class="container">
-       
-    <ul class="list-group">
-    <li class="list-group-item"><a href="#/admin/users">{{"Gestió d'usuaris"|translate}}
-    <icon name="user" style="height: 1em;vertical-align: middle;" scale="4"/></a></li>
-    <li class="list-group-item"><a href="#/admin/surveys">{{"Visualització de qüestionaris"|translate}}
-		<icon name="clipboard" style="height: 1em;vertical-align: middle;" scale="4"/></a> </li>
-    <li class="list-group-item"><a href="#/ranking">{{'Rànquing de resultats'|translate}}</a>
-		<icon name="line-chart" style="height: 1em;vertical-align: middle;" scale="4"/></li>
-    <li class="list-group-item">{{"Extracció d'informes"|translate}}
-		<icon name="download" style="height: 1em;vertical-align: middle;" scale="4"/></li>
-    </ul>
+  <div class="container" >
+    <div class="row" >
+      <div class="col-sm-3">
+    <a href="#/admin/users" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/14.svg" alt="Smiley face"  height="100" width="100">
+    <figcaption>{{"Gestió d'usuaris"|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+      <div class="col-sm-3">
+
+    <a href="#/admin/surveys" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/15.svg" alt="Smiley face"  height="100" width="100">
+    <figcaption>{{"Visualització de qüestionaris"|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+      <div class="col-sm-3">
+
+    <a href="#/ranking" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/16.svg" alt="Smiley face"  height="100" width="100">
+    <figcaption>{{'Rànquing de resultats'|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+      <div class="col-sm-3">
+
+    <a href="#/informes" style="color:white">
+    <figure>
+    <img src="/static/img/svgs/17.svg" alt="Smiley face"  height="100" width="100">
+    <figcaption>{{"Extracció d'informes"|translate}}</figcaption>
+  </figure>
+</a>
+</div>
+ </div>
 
   </div>
 </template>

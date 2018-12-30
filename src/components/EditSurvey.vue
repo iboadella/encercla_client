@@ -18,6 +18,7 @@
 </tbody>
 </table>
       <b-button v-on:click="updateSurvey()" variant="success">{{'Actualitzar'|translate}}</b-button>
+      <a href="/#/admin" class="btn btn-danger"role="button" style="background-color:black" >{{'Cancel·lar'|translate}}</a>
 
   </div>
 </template>
